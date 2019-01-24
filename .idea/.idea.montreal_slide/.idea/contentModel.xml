@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\jorda\.Rider2018.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\jorda\.Rider2018.2\system\resharper-host\local\Transient\ReSharperHost\v182\SolutionCaches\_montreal_slide.-1030383770.00" t="ExcludeRecursive" />
+    <e p="C:\Users\jorda\Desktop\Dawson College\Semester 2\montreal_slide" t="IncludeRecursive">
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Scripts" t="Include">
+          <e p="BasicMovement.cs" t="Include" />
+        </e>
+      </e>
+      <e p="montreal_slide.sln" t="IncludeFlat" />
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>
