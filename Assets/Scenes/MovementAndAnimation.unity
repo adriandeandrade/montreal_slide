@@ -310,7 +310,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1665998882}
   - component: {fileID: 1665998881}
-  - component: {fileID: 1665998880}
   - component: {fileID: 1665998879}
   - component: {fileID: 1665998883}
   - component: {fileID: 1665998884}
@@ -341,22 +340,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1665998880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1665998878}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 345c0fd96e516c044ae4cab0fd751420, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 1665998879}
-  playerSpeed: 0
-  jumpHeight: {x: 0, y: 3}
-  jump: 0
 --- !u!212 &1665998881
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -478,11 +461,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 995e8f5fdf0e2034ead068613fa83e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
   moveSpeed: 3
-  isMoving: 0
-  isJumping: 0
   jumpHeight: {x: 0, y: 3}
-  movement: {x: 0, y: 0, z: 0}
-  facing: 0
-  playerState: 0
