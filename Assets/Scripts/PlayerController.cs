@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Animator animator;
-    public float moveSpeed;
-    public bool isMoving;
-    public bool isJumping;
-    public Vector2 jumpHeight;
-    public Vector3 movement;
+    private Animator animator;
+    
+    private bool isMoving;
+    private bool isJumping;
 
-    public enum FacingDirection { LEFT, RIGHT };
-    public FacingDirection facing;
+    [Header("Player Parameters")]
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private Vector2 jumpHeight;
 
-    public enum PlayerStates { IDLE, RUNNING, JUMPING };
-    public PlayerStates playerState;
+    private Vector3 movement; // Global variable so we can access the players movement in another function (Ex. We reference it in the UpdateFacingDirection function.
+
+    public enum FacingDirection { LEFT, RIGHT }; // This enum is used to keep track of the players facing direction.
+    private FacingDirection facing;
+
+    public enum PlayerStates { IDLE, RUNNING, JUMPING }; // This enum is used to keep track of the players current state.
+    private PlayerStates playerState;
 
     private Rigidbody2D rBody2D;
 
@@ -27,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        facing = FacingDirection.RIGHT;
+        facing = FacingDirection.RIGHT; // Here we just initialize some variables.
         playerState = PlayerStates.IDLE;
         isMoving = false;
         isJumping = false;
@@ -35,27 +39,27 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Movement();
+        Movement(); // Do movement code every frame.
     }
 
     public void Movement()
     {
-        movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
-        transform.Translate(movement * moveSpeed * Time.deltaTime);
+        movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f); // Get the horizontal input and set it to the global movement variable.
+        transform.Translate(movement * moveSpeed * Time.deltaTime); // Move the player using the input we just got.
         UpdateFacingDirection();
 
-        if (movement.x > 0 || movement.x < 0)
+        if (movement.x > 0 || movement.x < 0) // Check if we are moving left or right.
         {
             isMoving = true;
-            playerState = PlayerStates.RUNNING;
+            playerState = PlayerStates.RUNNING; // Set our players state to RUNNING.
             //animator.SetFloat("Horizontal", movement.x);
-            animator.SetBool("IsMoving", true);
+            animator.SetBool("IsMoving", true); // Let the animator know we are moving by setting its IsMoving parameter to true.
         }
-        else if (movement.x == 0)
+        else if (movement.x == 0) // Check if we arent moving.
         {
             isMoving = false;
-            animator.SetBool("IsMoving", false);
-            playerState = PlayerStates.IDLE;
+            animator.SetBool("IsMoving", false); // Let the animator know we have stopped moving by setting IsMoving to false.
+            playerState = PlayerStates.IDLE; // Set the players state to idle since we arent moving.
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -68,15 +72,15 @@ public class PlayerController : MonoBehaviour
 
     public void UpdateFacingDirection()
     {
-        if (movement.x > 0f)
+        if (movement.x > 0f) // Here we check if we are moving right.
         {
-            facing = FacingDirection.RIGHT;
-            animator.SetBool("facingLeft", false);
+            facing = FacingDirection.RIGHT; // Set our players facing direction to RIGHT.
+            animator.SetBool("facingLeft", false); // Let the animator know that we arent facing left.
         }
-        else if (movement.x < 0f)
+        else if (movement.x < 0f) // Check if we are moving left.
         {
-            facing = FacingDirection.LEFT;
-            animator.SetBool("facingLeft", true);
+            facing = FacingDirection.LEFT; // Set our players facing direction to LEFT.
+            animator.SetBool("facingLeft", true); // Left the animator know that we are facing left.
 
         }
     }
