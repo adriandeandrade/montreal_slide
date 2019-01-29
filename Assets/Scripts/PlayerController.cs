@@ -7,11 +7,10 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     
     private bool isMoving;
-    private bool isJumping;
+    public bool isJumping;
 
     [Header("Player Parameters")]
     [SerializeField] private float moveSpeed;
-    [SerializeField] private Vector2 jumpHeight;
 
     private Vector3 movement; // Global variable so we can access the players movement in another function (Ex. We reference it in the UpdateFacingDirection function.
 
@@ -64,10 +63,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
-            GetComponent<Rigidbody2D>().AddForce(jumpHeight, ForceMode2D.Impulse);
             isJumping = true;
             animator.SetBool("IsJumping", isJumping);
         }
+    }
+
+    public void Jump(float jumpForce)
+    {
+        rBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
     }
 
     public void UpdateFacingDirection()
