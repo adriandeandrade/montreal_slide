@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         {
             isMoving = true;
             playerState = PlayerStates.RUNNING; // Set our players state to RUNNING.
-            //animator.SetFloat("Horizontal", movement.x);
+            animator.SetFloat("Horizontal", movement.x);
             animator.SetBool("IsMoving", true); // Let the animator know we are moving by setting its IsMoving parameter to true.
         }
         else if (movement.x == 0) // Check if we arent moving.
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
             playerState = PlayerStates.IDLE; // Set the players state to idle since we arent moving.
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             GetComponent<Rigidbody2D>().AddForce(jumpHeight, ForceMode2D.Impulse);
             isJumping = true;
@@ -88,5 +88,6 @@ public class PlayerController : MonoBehaviour
     public void OnCollisionEnter2D(Collision2D col)
     {
         animator.SetBool("IsJumping", false);
+        isJumping = false;
     }
 }
