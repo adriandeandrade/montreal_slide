@@ -5,34 +5,60 @@ using UnityEngine.UI;
 
 public class JumpMeter : MonoBehaviour
 {
-    public Scrollbar scrollBar;
+    [SerializeField] private Scrollbar scrollBar;
+    private PlayerController playerController;
 
-    public float jumpValue = 0f;
-    public float meterIncrement;
+    [Header("Jump Configuration")]
+    [Tooltip("This value controls the jump force multiplier.")]
+    public float jumpForceMultiplier;
+    
+    private float jumpForceAmount;
+    [Tooltip("This value controls the how fast the jump meter increments.")]
+    [SerializeField] private float jumpForceIncrement;
+
+    private bool isCalculatingJump; // Boolean for keeping track of whether or not we are calculating a jump.
+
+    private void Awake()
+    {
+        playerController = GetComponent<PlayerController>();
+    }
 
     private void Start()
     {
-        
+        scrollBar.value = 0f;
     }
 
     private void Update()
     {
-        UpdateJumpMeter();
+        if(Input.GetKeyDown(KeyCode.Space) && !playerController.isJumping)
+        {
+            StartCoroutine(CalculateJumpForce());
+            isCalculatingJump = true;
+        }
     }
 
-    private void UpdateJumpMeter()
+    IEnumerator CalculateJumpForce()
     {
-        bool spaceBar = Input.GetKey(KeyCode.Space);
-
-        if(spaceBar)
+        while (Input.GetKey(KeyCode.Space))
         {
-            jumpValue += meterIncrement * Time.deltaTime;
-            scrollBar.value = jumpValue;
-
-            if(jumpValue >= 1)
+            if(jumpForceAmount >= 1f)
             {
-                // Initiate jump automatically
+                isCalculatingJump = false;
+                playerController.Jump(jumpForceAmount * jumpForceMultiplier);
+                jumpForceAmount = 0f;
+                scrollBar.value = 0f;
+                yield break;
             }
+
+            jumpForceAmount += jumpForceIncrement * Time.deltaTime;
+            scrollBar.value = jumpForceAmount;
+            yield return new WaitForSeconds(Time.deltaTime);
         }
+
+        isCalculatingJump = false;
+        playerController.Jump(jumpForceAmount * jumpForceMultiplier);
+        jumpForceAmount = 0f;
+        scrollBar.value = 0f;
+        yield break;
     }
 }
