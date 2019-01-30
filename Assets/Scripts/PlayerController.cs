@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
         else if (movement.x == 0) // Check if we arent moving.
         {
             isMoving = false;
+            //rBody2D.velocity = Vector2.zero;
             animator.SetBool("IsMoving", false); // Let the animator know we have stopped moving by setting IsMoving to false.
             playerState = PlayerStates.IDLE; // Set the players state to idle since we arent moving.
         }
