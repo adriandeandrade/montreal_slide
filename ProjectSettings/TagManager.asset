@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - GiantSnowball
   layers:
   - Default
   - TransparentFX
@@ -38,12 +39,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: BG
-    uniqueID: 2824598215
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BG
+    uniqueID: 3222035515
+    locked: 0
+  - name: Player
+    uniqueID: 103917133
+    locked: 0
   - name: Foreground
-    uniqueID: 699814919
+    uniqueID: 1103029057
     locked: 0
