@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GiantSnowball : MonoBehaviour
+public class GiantSnowball : PhysicsObject
 {
     [SerializeField] private float rollSpeed;
     private Rigidbody2D rBody2D;
 
-    private void Update()
+    protected override void Update()
     {
-        transform.Translate(Vector2.left * rollSpeed * Time.deltaTime);
+        base.Update();
+    }
+
+    protected override void ComputeVelocity()
+    {
+        targetVelocity = Vector2.left * rollSpeed;
     }
 
     public void KillBall()

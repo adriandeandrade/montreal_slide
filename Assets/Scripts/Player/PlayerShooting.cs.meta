@@ -3,7 +3,9 @@ guid: 688233377a12aa343b4054893dc41c72
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - snowBallPrefab: {fileID: 7860420614786663442, guid: c464e276ac1979c49be885e415056c93,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
