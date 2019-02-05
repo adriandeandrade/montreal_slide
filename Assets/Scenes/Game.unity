@@ -510,7 +510,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292700996}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.220383, y: -4.3024006, z: -8}
+  m_LocalPosition: {x: -13.470632, y: -11.0424, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1193854902}
@@ -1287,6 +1287,89 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1286149318}
   m_CullTransparentMesh: 0
+--- !u!1001 &1459066229
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3985123573249816902, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_Name
+      value: GiantSnowball
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -12.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816900, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816901, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1103029057
+      objectReference: {fileID: 0}
+    - target: {fileID: 3985123573249816901, guid: fc7f37636b5819c4fb467a967e5564b3,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 643763673, guid: fc7f37636b5819c4fb467a967e5564b3, type: 3}
+      propertyPath: rollSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fc7f37636b5819c4fb467a967e5564b3, type: 3}
 --- !u!1 &1548266495
 GameObject:
   m_ObjectHideFlags: 0
@@ -1365,7 +1448,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548266495}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.2199653, y: -3.9599342, z: -8}
+  m_LocalPosition: {x: -13.461984, y: -3.945015, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1446,7 +1529,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633233811}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 15}
+  m_LocalPosition: {x: 0, y: -2.5, z: 15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1954219075}
@@ -1489,7 +1572,7 @@ SpriteRenderer:
   m_SortingLayerID: -1072931781
   m_SortingLayer: 1
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: 7be46f6f4516d6a4e9e78e53f86bccce, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c68473a3566619c42af18585e7281e03, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1627,7 +1710,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1665998878}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -4.4, z: 2}
+  m_LocalPosition: {x: -12.25, y: -11.14, z: 2}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1723,7 +1806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSnowballs: 5
-  currentSnowballs: 3
+  currentSnowballs: 5
   maxHealth: 3
 --- !u!1 &1695175769
 GameObject:
@@ -1932,10 +2015,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -37.989315, y: 10.389315}
+    - - {x: -37.989315, y: 7.709629}
       - {x: -37.941067, y: -15.530294}
       - {x: 38.04098, y: -15.622865}
-      - {x: 37.98931, y: 10.389314}
+      - {x: 37.886246, y: 8.121889}
 --- !u!4 &1852766107
 Transform:
   m_ObjectHideFlags: 0

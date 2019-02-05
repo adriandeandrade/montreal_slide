@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isMoving;
     public bool isJumping;
+    [SerializeField] private float reboundAmount;
 
     [Header("Player Parameters")]
     [SerializeField] private float moveSpeed;
@@ -108,7 +109,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("GiantSnowball"))
         {
             other.gameObject.GetComponent<GiantSnowball>().KillBall();
-            Jump(3f);
+            Jump(reboundAmount);
         }
     }
 }
