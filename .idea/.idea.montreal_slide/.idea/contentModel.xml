@@ -8,6 +8,11 @@
       <e p="Assets" t="Include">
         <e p="Scripts" t="Include">
           <e p="BasicMovement.cs" t="Include" />
+          <e p="JumpMeter.cs" t="Include" />
+          <e p="PlayerController.cs" t="Include" />
+        </e>
+        <e p="Shaders" t="Include">
+          <e p="Blur.shader" t="Include" />
         </e>
       </e>
       <e p="montreal_slide.sln" t="IncludeFlat" />
