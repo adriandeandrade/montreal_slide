@@ -5,8 +5,23 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class GiantSnowball : MonoBehaviour
 {
+    [Header("Movement Fields")]
     [SerializeField] private float rollSpeed;
-    [SerializeField] private float movementSmoothingAmount = 0.05f;
+    [SerializeField] private float movementSmoothingAmount = .05f;
+    [SerializeField] private bool movingLeft = true;
+    [SerializeField] private float knockBackForce;
+    [SerializeField] private float knockBackTime;
+    private float knockBackCounter;
+
+    private bool isGrounded;
+
+    [Header("Collision Fields")]
+    [SerializeField] private LayerMask playerMask;
+    [SerializeField] private LayerMask groundMask;
+    private RaycastHit2D hit;
+    [SerializeField] private float collisionCastDistance = 2f;
+    [SerializeField] private float groundCollisionCheckRadius = 0.2f;
+    [SerializeField] private Transform groundCheck;
 
     private Rigidbody2D rBody2D;
     private Vector2 Velocity;
@@ -16,37 +31,77 @@ public class GiantSnowball : MonoBehaviour
         rBody2D = GetComponent<Rigidbody2D>();
     }
 
-    private void Start()
-    {
-        
-    }
-
     private void Update()
     {
-        
+        if (knockBackCounter > 0)
+        {
+            knockBackCounter -= Time.deltaTime;
+        }
     }
 
     private void FixedUpdate()
     {
-        Vector2 targetVelocity = Vector2.left * 10f;
-        rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, movementSmoothingAmount);
+        if (knockBackCounter <= 0)
+        {
+            Move();
+        }
+        CheckCollisions();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void CheckCollisions()
     {
-        if (other.gameObject.CompareTag("Player"))
+        isGrounded = false;
+        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(groundCheck.position, groundCollisionCheckRadius, groundMask); // Check for ground using ground collision.
+
+        for (int i = 0; i < groundColliders.Length; i++)
         {
-            IDamageable objectToDealDamage = other.gameObject.GetComponent<IDamageable>();
-            if (objectToDealDamage != null)
+            if (groundColliders[i].gameObject != this.gameObject) // Check if we arent colliding with ourselves.
             {
-                objectToDealDamage.TakeDamage(1);
+                isGrounded = true;
             }
         }
+
+        //// Check for player
+        //if (movingLeft)
+        //{
+        //    Vector2 dir = transform.TransformDirection(Vector2.left);
+        //    hit = Physics2D.Raycast(transform.position, dir, collisionCastDistance, playerMask);
+
+        //    if (hit)
+        //    {
+        //        Vector2 hitDirection = transform.position - hit.transform.position;
+        //        hitDirection = hitDirection.normalized;
+        //        hit.transform.gameObject.GetComponent<Player>().Knockback(hitDirection);
+        //        Knockback(-hitDirection);
+        //    }
+
+        //    Debug.DrawRay(transform.position, dir * collisionCastDistance, Color.red);
+        //}
+    }
+
+    private void Move()
+    {
+        if (movingLeft && isGrounded)
+        {
+            Vector2 targetVelocity = Vector2.left * rollSpeed;
+            rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, movementSmoothingAmount);
+        }
+        else if (!movingLeft && isGrounded)
+        {
+            Vector2 targetVelocity = Vector2.right * rollSpeed;
+            rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, movementSmoothingAmount);
+        }
+    }
+
+    public void Knockback(Vector2 direction)
+    {
+        knockBackCounter = knockBackTime;
+        rBody2D.velocity = -direction * knockBackForce;
+        rBody2D.velocity = new Vector2(rBody2D.velocity.x, knockBackForce);
     }
 
     public void KillBall()
     {
-        //Spawn snowballs
         Destroy(gameObject);
     }
 }

@@ -580,10 +580,10 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: 4b002010-c240-41bf-86f5-77bbbc8b9e83
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: montreal_slide
+  organizationId: enjoiii
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

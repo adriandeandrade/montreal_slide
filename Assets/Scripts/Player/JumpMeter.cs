@@ -6,16 +6,16 @@ using UnityEngine.UI;
 public class JumpMeter : MonoBehaviour
 {
     [SerializeField] private Scrollbar scrollBar;
-    private CharacterController player;
+    private Player playerTest;
 
     [Header("Jump Configuration")]
     [Tooltip("This value controls the how fast the jump meter increments.")]
-    [SerializeField] private float jumpForceIncrement;
-    [HideInInspector] public float jumpForceAmount;
+    [SerializeField] private float scrollBarValueIncrement; // The amount that the scrollbar value increments by.
+    [HideInInspector] public float scrollBarValue; // The amount that the scrollbar is at when we release the spacebar.
 
     private void Awake()
     {
-        player = GetComponent<CharacterController>();
+        playerTest = GetComponent<Player>();
     }
 
     private void Start()
@@ -25,24 +25,28 @@ public class JumpMeter : MonoBehaviour
 
     public IEnumerator CalculateJumpForce()
     {
-        while (Input.GetButton("Jump")) // We run the code until we release the space bar.
+        while (Input.GetButton("Jump")) // Run until we release the space bar.
         {
-            if (jumpForceAmount >= 1f) // Since the scrollbar value only goes from 0-1, we want to make sure we dont go over 1.
+            if (scrollBarValue >= 1f) // Since the scrollbar value only goes from 0-1, we want to make sure we dont go over 1.
             {
-                player.Jump(jumpForceAmount);
-                jumpForceAmount = 0f; // Reset the jump force value to 0.
-                scrollBar.value = 0f; // Reset the scroll bar value to 0 (visual).
+                playerTest.Jump(scrollBarValue);
+                ResetValues();
                 yield break;
             }
 
-            jumpForceAmount += jumpForceIncrement * Time.deltaTime; // Increment jump force amount by the multiplier we set.
-            scrollBar.value = jumpForceAmount; // Set the scrollbar value to the jump force amount each deltaTime second.
+            scrollBarValue += scrollBarValueIncrement * Time.deltaTime; // Increment jump force amount by the multiplier we set.
+            scrollBar.value = scrollBarValue; // Set the scrollbar value to the jump force amount each deltaTime second.
             yield return new WaitForSeconds(Time.deltaTime);
         }
 
-        player.Jump(jumpForceAmount);
-        jumpForceAmount = 0f;
-        scrollBar.value = 0f;
+        playerTest.Jump(scrollBarValue);
+        ResetValues();
         yield break;
+    }
+
+    private void ResetValues()
+    {
+        scrollBarValue = 0f;
+        scrollBar.value = 0f;
     }
 }

@@ -2,148 +2,115 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IDamageable
+public class Player : MonoBehaviour
 {
-    [SerializeField] private int maxSnowballs = 5;
-    [SerializeField] private int currentSnowballs;
-    [SerializeField] private int maxHealth = 3;
-    [SerializeField] private float knockbackAmount;
+    [SerializeField] private JumpMeter jumpMeter;
+    private Rigidbody2D rBody2D;
 
-    public float maxSpeed;
-    public float jumpHeightModifier;
+    [Header("Player Fields")]
+    [Range(1f, 150f)] [SerializeField] private float moveSpeed;
+    [SerializeField] private float movementSmoothingAmount = .05f;
+    [SerializeField] private float jumpHeightMultiplier;
+    [SerializeField] private float knockBackForce;
+    [SerializeField] private float knockBackTime;
+    private float knockBackCounter;
 
-    private float jumpVelocity;
+    private float xMove = 0f;
+    private float jumpAmount;
+    private bool isGrounded;
+    private bool jump;
+    private Vector2 Velocity;
 
-    public enum FacingDirection { LEFT, RIGHT };
-    private FacingDirection facing;
+    [Header("Collision Fields")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundMask;
+    private const float groundedRadius = 0.2f;
 
-    public enum PlayerStates { IDLE, RUNNING, JUMPING };
-    private PlayerStates playerState;
-
-    private Vector2 movement;
-
-    private SpriteRenderer spriteRenderer;
-    private Animator animator;
-    private PlayerShooting shooting;
-    private JumpMeter jumpMeter;
-
-    private int health;
-    public int Health
+    private void Awake()
     {
-        get
-        {
-            return health;
-        }
-        set
-        {
-            health = value;
-        }
-    }
-
-    void Awake()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        rBody2D = GetComponent<Rigidbody2D>();
         jumpMeter = GetComponent<JumpMeter>();
-    }
-
-    private void Start()
-    {
-        shooting = GetComponent<PlayerShooting>();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) && HasAmmo()) // Left mouse button
+        xMove = Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockBackCounter <= 0)
         {
-            shooting.Shoot();
-            currentSnowballs -= 1;
+            StartCoroutine(jumpMeter.CalculateJumpForce());
+        }
+
+        if (knockBackCounter > 0)
+        {
+            knockBackCounter -= Time.deltaTime;
         }
     }
 
-    #region Movement and Animator Code
-
-    //protected override void ComputeVelocity()
-    //{
-    //    movement = Vector2.zero;
-    //    movement.x = Input.GetAxis("Horizontal");
-
-    //    UpdateFacingDirection();
-
-    //    if (Input.GetButtonDown("Jump") && isGrounded)
-    //    {
-    //        StartCoroutine(jumpMeter.CalculateJumpForce());
-    //    }
-
-    //    targetVelocity = movement * maxSpeed;
-
-    //    if (isGrounded)
-    //    {
-    //        animator.SetBool("IsJumping", false);
-    //    }
-    //    else if (!isGrounded)
-    //    {
-    //        animator.SetBool("IsJumping", true);
-    //    }
-    //}
-
-    //public void UpdateFacingDirection()
-    //{
-    //    if (movement.x > 0f) // Here we check if we are moving right.
-    //    {
-    //        facing = FacingDirection.RIGHT; // Set our players facing direction to RIGHT.
-    //        animator.SetBool("facingLeft", false); // Let the animator know that we arent facing left.
-    //        isMoving = true;
-    //        animator.SetBool("IsMoving", true);
-    //    }
-    //    else if (movement.x < 0f) // Check if we are moving left.
-    //    {
-    //        facing = FacingDirection.LEFT; // Set our players facing direction to LEFT.
-    //        animator.SetBool("facingLeft", true); // Left the animator know that we are facing left.
-    //        isMoving = true;
-    //        animator.SetBool("IsMoving", true);
-    //    }
-    //    else if (movement.x == 0)
-    //    {
-    //        isMoving = false;
-    //        animator.SetBool("IsMoving", false);
-    //    }
-    //}
-
-    //public void SetJumpVelocity(float jumpAmount)
-    //{
-    //    Jump(jumpAmount * jumpHeightModifier);
-    //}
-
-    #endregion
-
-    private bool HasAmmo()
+    private void FixedUpdate()
     {
-        if (currentSnowballs > 0)
+        if (knockBackCounter <= 0)
         {
-            return true;
+            Move(xMove);
+
+            if (jump)
+            {
+                rBody2D.AddForce(Vector2.up * jumpAmount * jumpHeightMultiplier, ForceMode2D.Impulse);
+                jump = false;
+            }
         }
-        else
+
+        CheckCollisions();
+    }
+
+    private void CheckCollisions()
+    {
+        isGrounded = false;
+        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(groundCheck.position, groundedRadius, groundMask); // Check for ground using ground collision.
+
+        for (int i = 0; i < groundColliders.Length; i++)
         {
-            return false;
+            if (groundColliders[i].gameObject != this.gameObject) // Check if we arent colliding with ourselves.
+            {
+                isGrounded = true;
+            }
         }
     }
 
-    public void TakeDamage(int amount)
+    public void Move(float move)
     {
-        if (Health > 0)
-        {
+        Vector2 targetVelocity = new Vector2(move * 10f, rBody2D.velocity.y);
+        rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, movementSmoothingAmount);
+    }
 
-        }
+    public void Jump(float amount)
+    {
+        jumpAmount = amount;
+        jump = true;
+    }
+
+    public void Knockback(Vector2 direction)
+    {
+        knockBackCounter = knockBackTime;
+        rBody2D.velocity = -direction * knockBackForce;
+        rBody2D.velocity = new Vector2(rBody2D.velocity.x, knockBackForce);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("GiantSnowballInteract"))
+        if (other.CompareTag("GiantSnowballInteract"))
         {
-            other.gameObject.GetComponentInParent<GiantSnowball>().KillBall();
-            //SetJumpVelocity(0.3f);
+            Jump(0.8f);
+            Destroy(other.GetComponentInParent<GiantSnowball>().gameObject);
         }
-    }
+        else if (other.CompareTag("GiantSnowball"))
+        {
+            Vector2 hitDirection = transform.position - other.transform.position;
+            hitDirection = hitDirection.normalized;
+            other.GetComponentInParent<GiantSnowball>().Knockback(hitDirection);
+            Knockback(-hitDirection);
+        }
 
+
+    }
 }
