@@ -2,19 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GiantSnowball : PhysicsObject
+[RequireComponent(typeof(Rigidbody2D))]
+public class GiantSnowball : MonoBehaviour
 {
     [SerializeField] private float rollSpeed;
-    private Rigidbody2D rBody2D;
+    [SerializeField] private float movementSmoothingAmount = 0.05f;
 
-    protected override void Update()
+    private Rigidbody2D rBody2D;
+    private Vector2 Velocity;
+
+    private void Awake()
     {
-        base.Update();
+        rBody2D = GetComponent<Rigidbody2D>();
     }
 
-    protected override void ComputeVelocity()
+    private void Start()
     {
-        targetVelocity = Vector2.left * rollSpeed;
+        
+    }
+
+    private void Update()
+    {
+        
+    }
+
+    private void FixedUpdate()
+    {
+        Vector2 targetVelocity = Vector2.left * 10f;
+        rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, movementSmoothingAmount);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            IDamageable objectToDealDamage = other.gameObject.GetComponent<IDamageable>();
+            if (objectToDealDamage != null)
+            {
+                objectToDealDamage.TakeDamage(1);
+            }
+        }
     }
 
     public void KillBall()

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : PhysicsObject, IDamageable
+public class Player : MonoBehaviour, IDamageable
 {
     [SerializeField] private int maxSnowballs = 5;
     [SerializeField] private int currentSnowballs;
@@ -52,70 +52,68 @@ public class Player : PhysicsObject, IDamageable
         shooting = GetComponent<PlayerShooting>();
     }
 
-    protected override void Update()
+    private void Update()
     {
         if (Input.GetMouseButtonDown(0) && HasAmmo()) // Left mouse button
         {
             shooting.Shoot();
             currentSnowballs -= 1;
         }
-
-        base.Update();
     }
 
     #region Movement and Animator Code
 
-    protected override void ComputeVelocity()
-    {
-        movement = Vector2.zero;
-        movement.x = Input.GetAxis("Horizontal");
+    //protected override void ComputeVelocity()
+    //{
+    //    movement = Vector2.zero;
+    //    movement.x = Input.GetAxis("Horizontal");
 
-        UpdateFacingDirection();
+    //    UpdateFacingDirection();
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            StartCoroutine(jumpMeter.CalculateJumpForce());
-        }
+    //    if (Input.GetButtonDown("Jump") && isGrounded)
+    //    {
+    //        StartCoroutine(jumpMeter.CalculateJumpForce());
+    //    }
 
-        targetVelocity = movement * maxSpeed;
+    //    targetVelocity = movement * maxSpeed;
 
-        if (isGrounded)
-        {
-            animator.SetBool("IsJumping", false);
-        }
-        else if (!isGrounded)
-        {
-            animator.SetBool("IsJumping", true);
-        }
-    }
+    //    if (isGrounded)
+    //    {
+    //        animator.SetBool("IsJumping", false);
+    //    }
+    //    else if (!isGrounded)
+    //    {
+    //        animator.SetBool("IsJumping", true);
+    //    }
+    //}
 
-    public void UpdateFacingDirection()
-    {
-        if (movement.x > 0f) // Here we check if we are moving right.
-        {
-            facing = FacingDirection.RIGHT; // Set our players facing direction to RIGHT.
-            animator.SetBool("facingLeft", false); // Let the animator know that we arent facing left.
-            isMoving = true;
-            animator.SetBool("IsMoving", true);
-        }
-        else if (movement.x < 0f) // Check if we are moving left.
-        {
-            facing = FacingDirection.LEFT; // Set our players facing direction to LEFT.
-            animator.SetBool("facingLeft", true); // Left the animator know that we are facing left.
-            isMoving = true;
-            animator.SetBool("IsMoving", true);
-        }
-        else if (movement.x == 0)
-        {
-            isMoving = false;
-            animator.SetBool("IsMoving", false);
-        }
-    }
+    //public void UpdateFacingDirection()
+    //{
+    //    if (movement.x > 0f) // Here we check if we are moving right.
+    //    {
+    //        facing = FacingDirection.RIGHT; // Set our players facing direction to RIGHT.
+    //        animator.SetBool("facingLeft", false); // Let the animator know that we arent facing left.
+    //        isMoving = true;
+    //        animator.SetBool("IsMoving", true);
+    //    }
+    //    else if (movement.x < 0f) // Check if we are moving left.
+    //    {
+    //        facing = FacingDirection.LEFT; // Set our players facing direction to LEFT.
+    //        animator.SetBool("facingLeft", true); // Left the animator know that we are facing left.
+    //        isMoving = true;
+    //        animator.SetBool("IsMoving", true);
+    //    }
+    //    else if (movement.x == 0)
+    //    {
+    //        isMoving = false;
+    //        animator.SetBool("IsMoving", false);
+    //    }
+    //}
 
-    public void SetJumpVelocity(float jumpAmount)
-    {
-        velocity.y = jumpAmount * jumpHeightModifier;
-    }
+    //public void SetJumpVelocity(float jumpAmount)
+    //{
+    //    Jump(jumpAmount * jumpHeightModifier);
+    //}
 
     #endregion
 
@@ -141,18 +139,11 @@ public class Player : PhysicsObject, IDamageable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("GiantSnowball"))
+        if (other.gameObject.CompareTag("GiantSnowballInteract"))
         {
-            other.gameObject.GetComponent<GiantSnowball>().KillBall();
-            SetJumpVelocity(knockbackAmount);
+            other.gameObject.GetComponentInParent<GiantSnowball>().KillBall();
+            //SetJumpVelocity(0.3f);
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("GiantSnowball"))
-        {
-            Debug.Log("Took damage");
-        }
-    }
 }

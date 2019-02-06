@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2064218940476232438
+--- !u!1 &3410908683283970159
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,72 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2064218940476232394}
-  - component: {fileID: 2064218940476232393}
-  - component: {fileID: 2064218940476232439}
-  - component: {fileID: 2064218940476232396}
-  - component: {fileID: 2064218940476232395}
-  - component: {fileID: 2064218940476232441}
-  - component: {fileID: 2064218940476232440}
-  - component: {fileID: 1275452729614083818}
+  - component: {fileID: 3410908683283970156}
   m_Layer: 0
-  m_Name: PlayerTest
+  m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2064218940476232394
+--- !u!4 &3410908683283970156
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
+  m_GameObject: {fileID: 3410908683283970159}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.032, y: -0.314, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7340114097249926599}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7340114097249926651
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7340114097249926599}
+  - component: {fileID: 7340114097249926596}
+  - component: {fileID: 7340114097249926650}
+  - component: {fileID: 7340114097249926593}
+  - component: {fileID: 7340114097249926598}
+  - component: {fileID: 7340114097249926648}
+  - component: {fileID: 7340114097249926649}
+  m_Layer: 0
+  m_Name: PlayerTest2
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7340114097249926599
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7340114097249926651}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -12.25, y: -14.32, z: 2}
   m_LocalScale: {x: 4, y: 4, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 3410908683283970156}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &2064218940476232393
+--- !u!212 &7340114097249926596
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
+  m_GameObject: {fileID: 7340114097249926651}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -85,14 +115,14 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &2064218940476232439
+--- !u!95 &7340114097249926650
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
+  m_GameObject: {fileID: 7340114097249926651}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: f42fffcce7881a94e8fc58b98e0113e1, type: 2}
@@ -104,13 +134,13 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!70 &2064218940476232396
+--- !u!70 &7340114097249926593
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
+  m_GameObject: {fileID: 7340114097249926651}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -120,75 +150,57 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.33, y: 0.62}
   m_Direction: 0
---- !u!50 &2064218940476232395
+--- !u!50 &7340114097249926598
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
-  m_BodyType: 1
+  m_GameObject: {fileID: 7340114097249926651}
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_LinearDrag: 0.5
+  m_AngularDrag: 0
+  m_GravityScale: 6
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &2064218940476232441
+--- !u!114 &7340114097249926648
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
+  m_GameObject: {fileID: 7340114097249926651}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab3c49e75299f3e44aea2a558dfec31f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d37e61b19cdc7e4d8e910ebc6970324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minGroundNormalY: 0.65
-  gravityModifier: 9.81
-  maxSnowballs: 5
-  currentSnowballs: 5
-  maxHealth: 3
-  knockbackAmount: 0.3
-  maxSpeed: 16
-  jumpHeightModifier: 50
---- !u!114 &2064218940476232440
+  movementSmoothing: 0.09
+  jumpAmount: 50
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 256
+  groundCheck: {fileID: 3410908683283970156}
+  rBody2D: {fileID: 7340114097249926598}
+  groundColliders: []
+--- !u!114 &7340114097249926649
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
+  m_GameObject: {fileID: 7340114097249926651}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a266e2753b0d4f46a4cf16c4054098a, type: 3}
+  m_Script: {fileID: 11500000, guid: e57bd969e1a2100488b81e0bad1a1b01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scrollBar: {fileID: 0}
-  jumpForceAmount: 0
-  jumpForceIncrement: 2.5
---- !u!114 &1275452729614083818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2064218940476232438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 688233377a12aa343b4054893dc41c72, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  snowBallPrefab: {fileID: 7860420614786663442, guid: c464e276ac1979c49be885e415056c93,
-    type: 3}
-  snowballSpeed: 10
-  cooldown: 1
+  moveSpeed: 60
