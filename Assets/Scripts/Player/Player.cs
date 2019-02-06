@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     private Vector2 Velocity;
 
     public Animator animator;
+    private SpriteRenderer spriteRenderer;
 
     [Header("Collision Fields")]
     [SerializeField] private Transform groundCheck;
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
         rBody2D = GetComponent<Rigidbody2D>();
         jumpMeter = GetComponent<JumpMeter>();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (OnLandEvent == null)
         {
@@ -113,9 +115,11 @@ public class Player : MonoBehaviour
     private void Flip()
     {
         facingRight = !facingRight;
-        Vector2 xScale = transform.localScale;
-        xScale.x *= -1;
-        transform.localScale = xScale;
+        spriteRenderer.flipX = facingRight;
+        //Vector2 xScale = transform.localScale;
+        //xScale.x *= -1;
+        //transform.localScale = xScale;
+
     }
 
     public void Jump(float amount)
