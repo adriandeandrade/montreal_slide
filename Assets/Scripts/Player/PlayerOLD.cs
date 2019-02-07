@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerOLD : MonoBehaviour, IDamageable
-{
+public class PlayerOLD : MonoBehaviour
+{ 
     [SerializeField] private int maxSnowballs = 5;
     [SerializeField] private int currentSnowballs;
     [SerializeField] private int maxHealth = 3;

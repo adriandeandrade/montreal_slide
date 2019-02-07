@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageable
 {
-    [SerializeField] private JumpMeter jumpMeter;
-    private Rigidbody2D rBody2D;
-
     [Header("Player Fields")]
+    [SerializeField] private JumpMeter jumpMeter;
+    [SerializeField] private GameObject jumpMeterUI;
     [Range(1f, 150f)] [SerializeField] private float moveSpeed;
     [SerializeField] private float movementSmoothingAmount = .05f;
     [SerializeField] private float jumpHeightMultiplier;
     [SerializeField] private float knockBackForce;
     [SerializeField] private float knockBackTime;
+    [SerializeField] private Color hurtColor;
     private float knockBackCounter;
 
     private float xMove = 0f;
@@ -22,15 +22,17 @@ public class Player : MonoBehaviour
     private bool facingRight = false;
     private bool jump;
     private Vector2 Velocity;
+    
 
-    public Animator animator;
+    private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rBody2D;
+    private HealthManager healthManager;
 
     [Header("Collision Fields")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
     private const float groundedRadius = 0.2f;
-
     public UnityEvent OnLandEvent;
 
     private void Awake()
@@ -39,11 +41,17 @@ public class Player : MonoBehaviour
         jumpMeter = GetComponent<JumpMeter>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        healthManager = FindObjectOfType<HealthManager>();
 
         if (OnLandEvent == null)
         {
             OnLandEvent = new UnityEvent();
         }
+    }
+
+    private void Start()
+    {
+        jumpMeterUI.SetActive(false);
     }
 
     private void Update()
@@ -53,12 +61,14 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockBackCounter <= 0)
         {
+            jumpMeterUI.SetActive(true);
             StartCoroutine(jumpMeter.CalculateJumpForce());
         }
 
         if (knockBackCounter > 0)
         {
             knockBackCounter -= Time.deltaTime;
+            spriteRenderer.color = hurtColor;
         }
     }
 
@@ -66,6 +76,7 @@ public class Player : MonoBehaviour
     {
         if (knockBackCounter <= 0)
         {
+            spriteRenderer.color = Color.white;
             Move(xMove);
 
             if (jump)
@@ -124,6 +135,7 @@ public class Player : MonoBehaviour
 
     public void Jump(float amount)
     {
+        jumpMeterUI.SetActive(false);
         jumpAmount = amount;
         jump = true;
         animator.SetBool("IsJumping", true);
@@ -132,6 +144,7 @@ public class Player : MonoBehaviour
     public void OnLanding()
     {
         animator.SetBool("IsJumping", false);
+        animator.SetBool("GotHurt", false);
     }
 
     public void Knockback(Vector2 direction)
@@ -139,6 +152,13 @@ public class Player : MonoBehaviour
         knockBackCounter = knockBackTime;
         rBody2D.velocity = -direction * knockBackForce;
         rBody2D.velocity = new Vector2(rBody2D.velocity.x, knockBackForce);
+        animator.SetBool("GotHurt", true);
+    }
+
+    public void TakeDamage(int amount, Vector2 hitDirection)
+    {
+        Knockback(-hitDirection);
+        healthManager.LoseHealth(amount);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -152,10 +172,8 @@ public class Player : MonoBehaviour
         {
             Vector2 hitDirection = transform.position - other.transform.position;
             hitDirection = hitDirection.normalized;
-            other.GetComponentInParent<GiantSnowball>().Knockback(hitDirection);
-            Knockback(-hitDirection);
+            other.GetComponentInParent<GiantSnowball>().Knockback(hitDirection); // Apply knockback effect to giant snowball.
+            TakeDamage(1, hitDirection);
         }
-
-
     }
 }
