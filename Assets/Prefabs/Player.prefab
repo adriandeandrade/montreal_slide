@@ -152,7 +152,7 @@ SpriteRenderer:
   m_SortingLayerID: 103917133
   m_SortingLayer: 2
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 6ff37e70160f373468d253ba2cd8264e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 64ee1ac3e4a4a8e489f198c50581a2b4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -173,7 +173,7 @@ Animator:
   m_GameObject: {fileID: 7340114097249926651}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f42fffcce7881a94e8fc58b98e0113e1, type: 2}
+  m_Controller: {fileID: 9100000, guid: d843e4a249270d943be1602ebcfc3fc9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -237,10 +237,16 @@ MonoBehaviour:
   jumpHeightMultiplier: 50
   knockBackForce: 20
   knockBackTime: 0.25
+  animator: {fileID: 0}
   groundCheck: {fileID: 3410908683283970156}
   groundMask:
     serializedVersion: 2
     m_Bits: 256
+  OnLandEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &1905141169
 MonoBehaviour:
   m_ObjectHideFlags: 0
