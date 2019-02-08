@@ -14,6 +14,7 @@ public class GiantSnowball : MonoBehaviour
     private float knockBackCounter;
 
     private bool isGrounded;
+    [SerializeField] private Animator animator;
 
     [Header("Collision Fields")]
     [SerializeField] private LayerMask playerMask;
@@ -22,6 +23,8 @@ public class GiantSnowball : MonoBehaviour
     [SerializeField] private float collisionCastDistance = 2f;
     [SerializeField] private float groundCollisionCheckRadius = 0.2f;
     [SerializeField] private Transform groundCheck;
+    [SerializeField] private BoxCollider2D interactCollider;
+    [SerializeField] private CircleCollider2D damageCollider;
 
     private Rigidbody2D rBody2D;
     private Vector2 Velocity;
@@ -85,6 +88,7 @@ public class GiantSnowball : MonoBehaviour
         {
             Vector2 targetVelocity = Vector2.left * rollSpeed;
             rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, movementSmoothingAmount);
+            animator.SetBool("IsRolling", true);
         }
         else if (!movingLeft && isGrounded)
         {
@@ -101,6 +105,15 @@ public class GiantSnowball : MonoBehaviour
     }
 
     public void KillBall()
+    {
+        animator.SetTrigger("Break");
+        rBody2D.simulated = false;
+        //damageCollider.enabled = false;
+        //interactCollider.enabled = false;
+        Invoke("Break", 1.5f);
+    }
+
+    public void Break()
     {
         Destroy(gameObject);
     }

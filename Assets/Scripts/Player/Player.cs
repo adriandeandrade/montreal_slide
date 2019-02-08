@@ -7,6 +7,7 @@ public class Player : MonoBehaviour, IDamageable
 {
     [Header("Player Fields")]
     [SerializeField] private JumpMeter jumpMeter;
+    [SerializeField] private PlayerShooting shooting;
     [SerializeField] private GameObject jumpMeterUI;
     [Range(1f, 150f)] [SerializeField] private float moveSpeed;
     [SerializeField] private float movementSmoothingAmount = .05f;
@@ -16,13 +17,17 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private Color hurtColor;
     private float knockBackCounter;
 
+    [Header("Shooting Fields")]
+    [SerializeField] private float throwCooldown;
+
     private float xMove = 0f;
     private float jumpAmount;
     private bool isGrounded;
     private bool facingRight = false;
-    private bool jump;
+    private bool isJumping;
+    public bool isThrowing;
     private Vector2 Velocity;
-    
+
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -35,6 +40,18 @@ public class Player : MonoBehaviour, IDamageable
     private const float groundedRadius = 0.2f;
     public UnityEvent OnLandEvent;
 
+    public float ThrowbackCooldown
+    {
+        get
+        {
+            return throwCooldown;
+        }
+        set
+        {
+            throwCooldown = value;
+        }
+    }
+
     private void Awake()
     {
         rBody2D = GetComponent<Rigidbody2D>();
@@ -42,6 +59,7 @@ public class Player : MonoBehaviour, IDamageable
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         healthManager = FindObjectOfType<HealthManager>();
+        shooting = GetComponent<PlayerShooting>();
 
         if (OnLandEvent == null)
         {
@@ -59,10 +77,30 @@ public class Player : MonoBehaviour, IDamageable
         xMove = Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
         animator.SetFloat("Speed", Mathf.Abs(xMove));
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockBackCounter <= 0)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockBackCounter <= 0 && !isThrowing)
         {
             jumpMeterUI.SetActive(true);
             StartCoroutine(jumpMeter.CalculateJumpForce());
+        }
+
+        if (Input.GetMouseButtonDown(0) && !shooting.coolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing)
+        {
+            if (MouseOnLeft() && facingRight)
+            {
+                Flip();
+                animator.SetBool("Throwing", true);
+                ThrowSnowball();
+            }
+            else if(!MouseOnLeft() && !facingRight)
+            {
+                Flip();
+                animator.SetBool("Throwing", true);
+                ThrowSnowball();
+            } else
+            {
+                animator.SetBool("Throwing", true);
+                ThrowSnowball();
+            }
         }
 
         if (knockBackCounter > 0)
@@ -79,10 +117,10 @@ public class Player : MonoBehaviour, IDamageable
             spriteRenderer.color = Color.white;
             Move(xMove);
 
-            if (jump)
+            if (isJumping)
             {
                 rBody2D.AddForce(Vector2.up * jumpAmount * jumpHeightMultiplier, ForceMode2D.Impulse);
-                jump = false;
+                isJumping = false;
             }
         }
 
@@ -137,12 +175,13 @@ public class Player : MonoBehaviour, IDamageable
     {
         jumpMeterUI.SetActive(false);
         jumpAmount = amount;
-        jump = true;
+        isJumping = true;
         animator.SetBool("IsJumping", true);
     }
 
     public void OnLanding()
     {
+        isJumping = false;
         animator.SetBool("IsJumping", false);
         animator.SetBool("GotHurt", false);
     }
@@ -152,6 +191,9 @@ public class Player : MonoBehaviour, IDamageable
         knockBackCounter = knockBackTime;
         rBody2D.velocity = -direction * knockBackForce;
         rBody2D.velocity = new Vector2(rBody2D.velocity.x, knockBackForce);
+
+        isJumping = false;
+        animator.SetBool("IsJumping", false);
         animator.SetBool("GotHurt", true);
     }
 
@@ -161,12 +203,39 @@ public class Player : MonoBehaviour, IDamageable
         healthManager.LoseHealth(amount);
     }
 
+    public void ThrowSnowball()
+    {
+        shooting.Shoot();
+        isThrowing = true;
+    }
+
+    public void OnFinishedThrowing()
+    {
+        animator.SetBool("Throwing", false);
+        isThrowing = false;
+    }
+
+    private bool MouseOnLeft()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (mousePos.x > transform.position.x)
+        {
+            return false;
+        }
+        else if (mousePos.x < transform.position.x)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("GiantSnowballInteract"))
         {
             Jump(0.8f);
-            Destroy(other.GetComponentInParent<GiantSnowball>().gameObject);
+            other.GetComponentInParent<GiantSnowball>().KillBall();
         }
         else if (other.CompareTag("GiantSnowball"))
         {

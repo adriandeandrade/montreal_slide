@@ -12,6 +12,14 @@ public class MainMenuController : MonoBehaviour
         levelFader = FindObjectOfType<LevelFader>();
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            helpMenu.SetActive(false);
+        }
+    }
+
     public void Play()
     {
         levelFader.FadeToLevel(1);
