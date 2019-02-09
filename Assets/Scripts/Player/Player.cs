@@ -8,26 +8,28 @@ public class Player : MonoBehaviour, IDamageable
     [Header("Player Fields")]
     [SerializeField] private JumpMeter jumpMeter;
     [SerializeField] private PlayerShooting shooting;
+    [SerializeField] private Inventory inventory;
     [SerializeField] private GameObject jumpMeterUI;
+    [SerializeField] private GameObject shieldObject;
     [Range(1f, 150f)] [SerializeField] private float moveSpeed;
     [SerializeField] private float movementSmoothingAmount = .05f;
     [SerializeField] private float jumpHeightMultiplier;
     [SerializeField] private float knockBackForce;
     [SerializeField] private float knockBackTime;
     [SerializeField] private Color hurtColor;
+    [SerializeField] private Color blueColor;
     private float knockBackCounter;
-
-    [Header("Shooting Fields")]
-    [SerializeField] private float throwCooldown;
 
     private float xMove = 0f;
     private float jumpAmount;
     private bool isGrounded;
+    private bool isDamaged;
     private bool facingRight = false;
     private bool isJumping;
     public bool isThrowing;
-    private Vector2 Velocity;
 
+    private Vector2 Velocity;
+    private HashSet<GameObject> takenDamageFrom = new HashSet<GameObject>();
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
@@ -39,18 +41,7 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private LayerMask groundMask;
     private const float groundedRadius = 0.2f;
     public UnityEvent OnLandEvent;
-
-    public float ThrowbackCooldown
-    {
-        get
-        {
-            return throwCooldown;
-        }
-        set
-        {
-            throwCooldown = value;
-        }
-    }
+    public UnityEvent OnGetShield;
 
     private void Awake()
     {
@@ -64,6 +55,11 @@ public class Player : MonoBehaviour, IDamageable
         if (OnLandEvent == null)
         {
             OnLandEvent = new UnityEvent();
+        }
+
+        if (OnGetShield == null)
+        {
+            OnGetShield = new UnityEvent();
         }
     }
 
@@ -83,7 +79,7 @@ public class Player : MonoBehaviour, IDamageable
             StartCoroutine(jumpMeter.CalculateJumpForce());
         }
 
-        if (Input.GetMouseButtonDown(0) && !shooting.coolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing)
+        if (Input.GetMouseButtonDown(0) && !shooting.CoolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing)
         {
             if (MouseOnLeft() && facingRight)
             {
@@ -91,12 +87,13 @@ public class Player : MonoBehaviour, IDamageable
                 animator.SetBool("Throwing", true);
                 ThrowSnowball();
             }
-            else if(!MouseOnLeft() && !facingRight)
+            else if (!MouseOnLeft() && !facingRight)
             {
                 Flip();
                 animator.SetBool("Throwing", true);
                 ThrowSnowball();
-            } else
+            }
+            else
             {
                 animator.SetBool("Throwing", true);
                 ThrowSnowball();
@@ -106,7 +103,6 @@ public class Player : MonoBehaviour, IDamageable
         if (knockBackCounter > 0)
         {
             knockBackCounter -= Time.deltaTime;
-            spriteRenderer.color = hurtColor;
         }
     }
 
@@ -186,7 +182,12 @@ public class Player : MonoBehaviour, IDamageable
         animator.SetBool("GotHurt", false);
     }
 
-    public void Knockback(Vector2 direction)
+    public void OnShield()
+    {
+        shieldObject.SetActive(true);
+    }
+
+    public void Knockback(Vector2 direction, Color color)
     {
         knockBackCounter = knockBackTime;
         rBody2D.velocity = -direction * knockBackForce;
@@ -195,12 +196,47 @@ public class Player : MonoBehaviour, IDamageable
         isJumping = false;
         animator.SetBool("IsJumping", false);
         animator.SetBool("GotHurt", true);
+        BlipPlayer(color);
+    }
+
+    private void BlipPlayer(Color color)
+    {
+        spriteRenderer.color = color;
     }
 
     public void TakeDamage(int amount, Vector2 hitDirection)
     {
-        Knockback(-hitDirection);
-        healthManager.LoseHealth(amount);
+        if (inventory.HasShield)
+        {
+            inventory.HasShield = false;
+            Knockback(-hitDirection, blueColor);
+            shieldObject.GetComponent<Animator>().SetTrigger("ShieldBreak");
+            Debug.Log("Took no damage");
+            return;
+        }
+
+        if (!inventory.HasShield)
+        {
+            Knockback(-hitDirection, hurtColor);
+            healthManager.LoseHealth(amount);
+            Debug.Log("Took damage");
+            return;
+        }
+    }
+
+    public void TakeDamage(int amount)
+    {
+        if (inventory.HasShield)
+        {
+            inventory.HasShield = false;
+            shieldObject.GetComponent<Animator>().SetTrigger("ShieldBreak");
+            Debug.Log("Took no damage");
+        }
+        else
+        {
+            healthManager.LoseHealth(amount);
+            Debug.Log("Took damage");
+        }
     }
 
     public void ThrowSnowball()
@@ -237,12 +273,32 @@ public class Player : MonoBehaviour, IDamageable
             Jump(0.8f);
             other.GetComponentInParent<GiantSnowball>().KillBall();
         }
-        else if (other.CompareTag("GiantSnowball"))
+
+        if (other.CompareTag("GiantSnowball") && !isDamaged)
         {
             Vector2 hitDirection = transform.position - other.transform.position;
             hitDirection = hitDirection.normalized;
             other.GetComponentInParent<GiantSnowball>().Knockback(hitDirection); // Apply knockback effect to giant snowball.
             TakeDamage(1, hitDirection);
+            isDamaged = true;
+        }
+
+        if (other.CompareTag("PlayerInteract"))
+        {
+            Item item = other.GetComponent<Item>();
+            if (item != null)
+            {
+                item.Init();
+                Destroy(other.gameObject);
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("GiantSnowball") && isDamaged)
+        {
+            isDamaged = false;
         }
     }
 }

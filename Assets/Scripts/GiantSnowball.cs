@@ -63,23 +63,6 @@ public class GiantSnowball : MonoBehaviour
                 isGrounded = true;
             }
         }
-
-        //// Check for player
-        //if (movingLeft)
-        //{
-        //    Vector2 dir = transform.TransformDirection(Vector2.left);
-        //    hit = Physics2D.Raycast(transform.position, dir, collisionCastDistance, playerMask);
-
-        //    if (hit)
-        //    {
-        //        Vector2 hitDirection = transform.position - hit.transform.position;
-        //        hitDirection = hitDirection.normalized;
-        //        hit.transform.gameObject.GetComponent<Player>().Knockback(hitDirection);
-        //        Knockback(-hitDirection);
-        //    }
-
-        //    Debug.DrawRay(transform.position, dir * collisionCastDistance, Color.red);
-        //}
     }
 
     private void Move()

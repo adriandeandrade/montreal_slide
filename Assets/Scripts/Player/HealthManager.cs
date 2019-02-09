@@ -41,7 +41,7 @@ public class HealthManager : MonoBehaviour
 
         if (currentHealth < 1)
         {
-            Debug.Log("Player has died.");
+            // Kill player.
         }
     }
 
