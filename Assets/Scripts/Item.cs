@@ -16,6 +16,11 @@ public class Item : MonoBehaviour
         player = FindObjectOfType<Player>();
     }
 
+    private void OnDestroy()
+    {
+        player.isPickingUp = false;
+    }
+
     public void Init()
     {
         switch(itemType)
@@ -56,6 +61,9 @@ public class Item : MonoBehaviour
 
     private void InitSnowball()
     {
-
+        if(player.CurrentSnowballs < player.maxSnowballs)
+        {
+            player.CurrentSnowballs += 1;
+        }
     }
 }

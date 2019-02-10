@@ -16,6 +16,7 @@ public class Player : MonoBehaviour, IDamageable
     [SerializeField] private float jumpHeightMultiplier;
     [SerializeField] private float knockBackForce;
     [SerializeField] private float knockBackTime;
+    [SerializeField] private int currentSnowballs;
     [SerializeField] private Color hurtColor;
     [SerializeField] private Color blueColor;
     private float knockBackCounter;
@@ -24,9 +25,11 @@ public class Player : MonoBehaviour, IDamageable
     private float jumpAmount;
     private bool isGrounded;
     private bool isDamaged;
+    [HideInInspector] public bool isPickingUp;
     private bool facingRight = false;
     private bool isJumping;
     public bool isThrowing;
+    [HideInInspector] public int maxSnowballs = 5;
 
     private Vector2 Velocity;
     private HashSet<GameObject> takenDamageFrom = new HashSet<GameObject>();
@@ -42,6 +45,19 @@ public class Player : MonoBehaviour, IDamageable
     private const float groundedRadius = 0.2f;
     public UnityEvent OnLandEvent;
     public UnityEvent OnGetShield;
+
+
+    public int CurrentSnowballs
+    {
+        get
+        {
+            return currentSnowballs;
+        }
+        set
+        {
+            currentSnowballs = value;
+        }
+    }
 
     private void Awake()
     {
@@ -79,7 +95,7 @@ public class Player : MonoBehaviour, IDamageable
             StartCoroutine(jumpMeter.CalculateJumpForce());
         }
 
-        if (Input.GetMouseButtonDown(0) && !shooting.CoolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing)
+        if (Input.GetMouseButtonDown(0) && !shooting.CoolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing && currentSnowballs > 0)
         {
             if (MouseOnLeft() && facingRight)
             {
@@ -286,10 +302,11 @@ public class Player : MonoBehaviour, IDamageable
         if (other.CompareTag("PlayerInteract"))
         {
             Item item = other.GetComponent<Item>();
-            if (item != null)
+            if (item != null && !isPickingUp)
             {
                 item.Init();
                 Destroy(other.gameObject);
+                isPickingUp = true;
             }
         }
     }
@@ -299,6 +316,11 @@ public class Player : MonoBehaviour, IDamageable
         if (other.CompareTag("GiantSnowball") && isDamaged)
         {
             isDamaged = false;
+        }
+
+        if(other.CompareTag("PlayerInteract") && isPickingUp)
+        {
+            isPickingUp = false;
         }
     }
 }

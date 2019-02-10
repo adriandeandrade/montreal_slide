@@ -76,7 +76,7 @@ public class PlayerShooting : MonoBehaviour
             shotDirection.z = 0;
             Quaternion rotation = Quaternion.LookRotation(shotDirection, Vector3.left);
             rotation.eulerAngles = new Vector3(0f, 0f, rotation.eulerAngles.z);
-
+            GetComponent<Player>().CurrentSnowballs--;
             GameObject snowballInstance = Instantiate(snowBallPrefab, transform.position, rotation);
             snowballInstance.GetComponent<Rigidbody2D>().velocity = shotDirection.normalized * snowballSpeed; //new Vector2(shotDirection.x * snowballSpeed, shotDirection.y * snowballSpeed);
             Destroy(snowballInstance, 3f);
