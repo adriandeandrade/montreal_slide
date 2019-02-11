@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - snowBallPrefab: {fileID: 7860420614786663442, guid: c464e276ac1979c49be885e415056c93,
       type: 3}
-  executionOrder: 120
+  executionOrder: 0
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

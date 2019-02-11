@@ -61,9 +61,9 @@ public class Item : MonoBehaviour
 
     private void InitSnowball()
     {
-        if(player.CurrentSnowballs < player.maxSnowballs)
+        if(inventory.CurrentSnowballs < inventory.MaxSnowballs)
         {
-            player.CurrentSnowballs += 1;
+            inventory.CurrentSnowballs += 1;
         }
     }
 }

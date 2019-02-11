@@ -15,6 +15,7 @@ public class GiantSnowball : MonoBehaviour
 
     private bool isGrounded;
     [SerializeField] private Animator animator;
+    [SerializeField] private List<Collider2D> colliders = new List<Collider2D>();
 
     [Header("Collision Fields")]
     [SerializeField] private LayerMask playerMask;
@@ -25,6 +26,9 @@ public class GiantSnowball : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private BoxCollider2D interactCollider;
     [SerializeField] private CircleCollider2D damageCollider;
+
+    [Header("Other")]
+    [SerializeField] private GameObject snowBallPrefab;
 
     private Rigidbody2D rBody2D;
     private Vector2 Velocity;
@@ -91,13 +95,25 @@ public class GiantSnowball : MonoBehaviour
     {
         animator.SetTrigger("Break");
         rBody2D.simulated = false;
-        //damageCollider.enabled = false;
-        //interactCollider.enabled = false;
-        Invoke("Break", 1.5f);
+        foreach (Collider2D col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        Invoke("Break", 0.2f);
     }
 
     public void Break()
     {
+        int amountToSpawn = Random.Range(1, 2);
+        
+        for (int i = 0; i < amountToSpawn; i++)
+        {
+            Vector2 spawnPos = new Vector2(Random.value, Random.value);
+            GameObject snow = Instantiate(Resources.Load("Prefabs/Items/Snowball_Pickup", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+            snow.GetComponent<Rigidbody2D>().AddForce(spawnPos * 2f, ForceMode2D.Impulse);
+        }
+
         Destroy(gameObject);
     }
 }
