@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerShooting : MonoBehaviour
 {
-    private Animator animator;
     [SerializeField] private Canvas cooldownBarUI;
-    public Image cooldownBarImage;
     [SerializeField] private GameObject snowBallPrefab;
+    private Inventory inventory;
+    private Animator animator;
+    public Image cooldownBarImage;
+    [SerializeField] private TextMeshProUGUI snowballAmountText;
+    
     [SerializeField] private float snowballSpeed;
 
     public float cooldown;
@@ -31,6 +35,7 @@ public class PlayerShooting : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        inventory = FindObjectOfType<Inventory>();
     }
 
     private void Start()
@@ -40,6 +45,8 @@ public class PlayerShooting : MonoBehaviour
 
     private void Update()
     {
+        snowballAmountText.text = "* " + inventory.CurrentSnowballs.ToString();
+
         if (coolingDown)
         {
             UpdateCooldownBar();
