@@ -267,7 +267,6 @@ GameObject:
   - component: {fileID: 1509243738583087229}
   - component: {fileID: 1509243738583087231}
   - component: {fileID: 1509243738583087230}
-  - component: {fileID: 1509243738583087224}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -460,7 +459,7 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   jumpMeter: {fileID: 1509243738583087231}
   playerShooting: {fileID: 1509243738583087230}
-  inventory: {fileID: 1509243738583087224}
+  inventory: {fileID: 0}
   healthManager: {fileID: 0}
   jumpMeterUI: {fileID: 1509243738546781166}
   shieldUI: {fileID: 1509243740265422429}
@@ -498,19 +497,6 @@ MonoBehaviour:
     type: 3}
   snowballSpeed: 60
   cooldown: 0.5
---- !u!114 &1509243738583087224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509243738583087228}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cca50441f16dc547b703fea62481db6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxAmountOfSnowballs: 5
 --- !u!1 &1509243738757450551
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,7 +665,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1509243739343722417}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}

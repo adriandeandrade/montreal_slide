@@ -18,7 +18,7 @@ public class Player : BaseEntity
     [SerializeField] private GameObject jumpMeterUI;
     [SerializeField] private GameObject shieldUI;
 
-    [HideInInspector] public bool isPickingUp;
+    public bool isPickingUp;
     private bool isThrowing;
     private float jumpAmount;
 
@@ -161,10 +161,10 @@ public class Player : BaseEntity
             Jump(1f);
             other.GetComponentInParent<GiantSnowball>().KillBall();
         }
-        else if (other.CompareTag("Item"))
+        else if (other.CompareTag("Item") && !isPickingUp)
         {
             Item item = other.GetComponent<Item>();
-            if (item != null && !isPickingUp)
+            if (item != null)
             {
                 item.Init();
                 Destroy(other.gameObject);
