@@ -2,150 +2,155 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bird : MonoBehaviour
+public class Bird : BaseEntity
 {
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float diveSpeed;
-    [SerializeField] private float attackRange;
-    [SerializeField] private Vector2 moveDirection;
+    public enum BIRD_STATE { IDLE = 0, ATTACK = 1, RESET = 2 }
 
+    [Header("Bird Setup")]
+    public BIRD_STATE states;
+    [SerializeField] private float attackDistance;
     [SerializeField] private Transform target;
-    [SerializeField] private CircleCollider2D flockRange;
-    [SerializeField] private Transform flock;
-    private Animator animator;
-    private SpriteRenderer sr;
+    [SerializeField] private FlockManager flockManager;
 
-    private bool hasTarget;
-    private bool attacking;
-    private bool facingRight = false;
+    private Transform flock;
+    private CircleCollider2D flockCollider;
 
-    [SerializeField] private float timeUntilNextDirection = 3f;
+    private float timeUntilPickNextDirection = 3f;
+    private bool tooFarFromFlock;
+    [HideInInspector] public bool hasAttacked = false;
+    private Vector3 startPos;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         animator = GetComponentInChildren<Animator>();
-        sr = GetComponentInChildren<SpriteRenderer>();
-        attacking = false;
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        flock = GetComponentInParent<FlockManager>().transform;
+        flockCollider = flock.GetComponentInParent<CircleCollider2D>();
+        flockManager = GetComponentInParent<FlockManager>();
+        target = FindObjectOfType<Player>().transform;
+
+        states = BIRD_STATE.IDLE;
     }
 
     private void Start()
     {
-        flock = GetComponentInParent<Transform>();
-        Flip();
-        moveDirection = ChangeDirection();
-        StartCoroutine(Move());
+        StartCoroutine(EnemyFSM());
+        startPos = transform.position;
+        xMove = PickNewDirection() * moveSpeed * Time.deltaTime;
     }
 
-    private void Update()
+    protected override void FixedUpdate()
     {
-        Debug.DrawLine(transform.position, Vector2.left * attackRange, Color.white);
+        base.FixedUpdate();
+        Move();
+    }
 
-        if (moveDirection.x > 0 && !facingRight)
+    protected override void Move()
+    {
+        Vector2 targetVelocity = new Vector2(xMove.x * 10f, xMove.y * 10f);
+        rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, moveSpeedSmoothing);
+
+        if (xMove.x > 0 && !facingRight)
         {
             Flip();
         }
-        else if (moveDirection.x < 0 && facingRight)
+        else if (xMove.x < 0 && facingRight)
         {
             Flip();
         }
     }
 
-    private void Flip()
+    IEnumerator EnemyFSM()
     {
-        facingRight = !facingRight;
-        sr.flipX = facingRight;
-
-    }
-
-    IEnumerator Move()
-    {
-        while (!hasTarget)
+        while (true)
         {
-            if (Vector2.Distance(transform.position, target.transform.position) >= attackRange)
-            {
-                hasTarget = true;
-                StartCoroutine(Attack());
-                break;
-            }
-
-            if (Vector2.Distance(flock.position, transform.position) > 5)
-            {
-                moveDirection = -moveDirection;
-            }
-
-            else if (timeUntilNextDirection <= 0)
-            {
-                moveDirection = ChangeDirection();
-                timeUntilNextDirection = 3f;
-            }
-
-            transform.Translate(moveDirection.normalized * diveSpeed * Time.deltaTime);
-
-            timeUntilNextDirection -= Time.deltaTime; ;
-        }
-
-        yield return null;
-    }
-
-    IEnumerator Attack()
-    {
-        attacking = true;
-        animator.SetBool("hasTarget", true);
-        yield return new WaitForSeconds(0.8f);
-
-        Vector2 newDirection = target.transform.position - transform.position;
-        moveDirection = newDirection.normalized;
-
-        while (attacking)
-        {
-            transform.Translate(moveDirection.normalized * diveSpeed * Time.deltaTime);
+            Debug.Log("RUNNING");
+            yield return StartCoroutine(states.ToString());
         }
     }
 
-    IEnumerator ReturnToFlock()
+    IEnumerator IDLE()
     {
-        while (Vector2.Distance(flock.position, transform.position) < 1f)
+        while (states == BIRD_STATE.IDLE)
         {
-            Vector2 newDirection = flock.position - transform.position;
-            moveDirection = newDirection.normalized;
-            transform.Translate(moveDirection.normalized * moveSpeed * Time.deltaTime);
-        }
+            animator.SetBool("isFlying", true);
+            if (timeUntilPickNextDirection <= 0 || tooFarFromFlock)
+            {
+                xMove = PickNewDirection() * moveSpeed * Time.deltaTime;
+                timeUntilPickNextDirection = 3f;
+            }
 
-        yield return null;
+            timeUntilPickNextDirection -= Time.deltaTime;
+            yield return new WaitForSeconds(0f);
+        }
+    }
+
+    IEnumerator ATTACK()
+    {
+        while (states == BIRD_STATE.ATTACK)
+        {
+            animator.SetTrigger("targetAquired");
+            yield return new WaitForSeconds(0.3f);
+            hasAttacked = true;
+            Vector2 targetPos = target.position - transform.position;
+            xMove = targetPos.normalized * 100 * Time.deltaTime;
+            yield return new WaitForSeconds(0f);
+        }
+    }
+
+    IEnumerator RESET()
+    {
+        while (states == BIRD_STATE.RESET)
+        {
+            if (transform.position != startPos)
+            {
+                xMove = startPos * moveSpeed * Time.deltaTime;
+            }
+
+            hasAttacked = false;
+            states = BIRD_STATE.IDLE;
+            yield return StartCoroutine(states.ToString());
+        }
+    }
+
+    private Vector2 PickNewDirection()
+    {
+        Vector2 myPos = transform.position;
+        Vector2 flockPos = flock.position;
+        Vector2 newDir = (flockPos + Random.insideUnitCircle * flockCollider.radius) - myPos;
+        return newDir.normalized;
+    }
+
+
+    public override void TakeDamage(int amount, Transform objectHit)
+    {
+        Knockback(objectHit, damageBlipColor);
+        animator.SetTrigger("hasDied");
+        flockManager.birds.Remove(this);
+        Destroy(gameObject, 0.8f);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Flock"))
         {
-            Vector2 hitDirection = transform.position - other.transform.position;
-            hitDirection = hitDirection.normalized;
-            attacking = false;
-            //other.GetComponent<IDamageable>().TakeDamage(1, hitDirection);
+            tooFarFromFlock = false;
+        }
+
+        if (other.CompareTag("Player") && states == BIRD_STATE.ATTACK)
+        {
+            flockManager.picked = false;
+            states = BIRD_STATE.RESET;
+            StartCoroutine(states.ToString());
         }
     }
 
-    private Vector2 ChangeDirection()
+    private void OnTriggerExit2D(Collider2D other)
     {
-        Vector2 newDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-        return newDirection.normalized;
-
-    }
-
-    public void TakeDamage(int amount, Vector2 hitDirection)
-    {
-        animator.SetBool("isDead", true);
-        Destroy(gameObject, 0.5f);
-    }
-
-    public void TakeDamage(int amount)
-    {
-        animator.SetBool("isDead", true);
-        Destroy(gameObject, 2f);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(transform.position, transform.position * flockRange.radius);
+        if (other.CompareTag("Flock"))
+        {
+            tooFarFromFlock = true;
+        }
     }
 }

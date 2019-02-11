@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4739558891021788846}
   - component: {fileID: 4739558891021788847}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Shield_PickUp_Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,9 +90,9 @@ GameObject:
   - component: {fileID: 4739558891060448058}
   - component: {fileID: 4739558891060448057}
   - component: {fileID: 4739558891060448059}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Shield_Pickup
-  m_TagString: PlayerInteract
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5734842123001471430}
   - component: {fileID: 4536188043925987685}
   - component: {fileID: 1390715224909424096}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: SnowballGFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 6072669231547043538}
   - component: {fileID: 632435694684512703}
   - component: {fileID: 1014416764005774949}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: SnowballTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4809,7 +4809,7 @@ GameObject:
   - component: {fileID: 1451966555}
   - component: {fileID: 239848275}
   - component: {fileID: 239848276}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: Snowball
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -87,7 +87,7 @@ public class BaseEntity : MonoBehaviour, IDamageable
         }
     }
 
-    protected void Move()
+    protected virtual void Move()
     {
         Vector2 targetVelocity = new Vector2(xMove.x * 10f, rBody2D.velocity.y);
         rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, moveSpeedSmoothing);

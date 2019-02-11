@@ -20,12 +20,13 @@ public class Snowball : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Bird"))
+        if (other.CompareTag("Enemy"))
         {
-            IDamageable damageable = other.gameObject.GetComponent<IDamageable>();
-            if (damageable != null)
+            Bird bird = other.gameObject.GetComponentInParent<Bird>();
+            if (bird != null)
             {
-                //damageable.TakeDamage(1);
+                bird.TakeDamage(1, transform);
+
                 GameObject hitEffect = Instantiate(snowballHitEffect, other.transform.position, Quaternion.identity);
                 Destroy(hitEffect, 3f);
                 Destroy(gameObject);

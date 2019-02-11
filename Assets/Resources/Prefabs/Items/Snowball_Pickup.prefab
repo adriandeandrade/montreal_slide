@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 357549689}
   - component: {fileID: 3960323781351476757}
   - component: {fileID: 644987006}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Snowball_Pickup
   m_TagString: Item
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6203347220457628905}
   - component: {fileID: 6203347220457628904}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Snowball_Pickup_Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

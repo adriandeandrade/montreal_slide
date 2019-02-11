@@ -142,15 +142,14 @@ public class Player : BaseEntity
         {
             if (inventory.HasShield)
             {
-                other.GetComponentInParent<GiantSnowball>().Knockback(transform, Color.white);
-                Knockback(other.transform, shieldBreakColor);
+                other.GetComponentInParent<BaseEntity>().Knockback(transform, Color.white);
                 inventory.HasShield = false;
                 shieldUI.GetComponent<Animator>().SetTrigger("ShieldBreak");
                 isGettingDamaged = true;
             }
             else if (!inventory.HasShield)
             {
-                other.GetComponentInParent<GiantSnowball>().Knockback(transform, Color.white);
+                other.GetComponentInParent<BaseEntity>().Knockback(transform, Color.white);
                 TakeDamage(1, other.transform);
                 isGettingDamaged = true;
             }
