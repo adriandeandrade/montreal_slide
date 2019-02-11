@@ -142,7 +142,7 @@ public class Player : BaseEntity
         {
             if (inventory.HasShield)
             {
-                other.GetComponentInParent<NewGiantSnowball>().Knockback(transform, Color.white);
+                other.GetComponentInParent<GiantSnowball>().Knockback(transform, Color.white);
                 Knockback(other.transform, shieldBreakColor);
                 inventory.HasShield = false;
                 shieldUI.GetComponent<Animator>().SetTrigger("ShieldBreak");
@@ -150,7 +150,7 @@ public class Player : BaseEntity
             }
             else if (!inventory.HasShield)
             {
-                other.GetComponentInParent<NewGiantSnowball>().Knockback(transform, Color.white);
+                other.GetComponentInParent<GiantSnowball>().Knockback(transform, Color.white);
                 TakeDamage(1, other.transform);
                 isGettingDamaged = true;
             }
@@ -160,7 +160,7 @@ public class Player : BaseEntity
         else if (other.CompareTag("GiantSnowballInteract"))
         {
             Jump(1f);
-            other.GetComponentInParent<NewGiantSnowball>().KillBall();
+            other.GetComponentInParent<GiantSnowball>().KillBall();
         }
         else if (other.CompareTag("Item"))
         {
