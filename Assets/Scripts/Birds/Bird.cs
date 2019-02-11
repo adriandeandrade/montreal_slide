@@ -114,9 +114,9 @@ public class Bird : BaseEntity
     {
         Debug.Log("RESETTING");
         moveSpeed = 10f;
-        movement = (startPos - transform.position).normalized;
         while (states == BIRD_STATE.RESET)
         {
+            movement = (startPos - transform.position).normalized;
             yield return new WaitForSeconds(0f);
         }
     }

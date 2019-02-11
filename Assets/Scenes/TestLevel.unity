@@ -6319,7 +6319,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1548266495}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.298134, y: -1.6968365, z: -8}
+  m_LocalPosition: {x: -20.279648, y: -1.6968365, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -7167,6 +7167,11 @@ PrefabInstance:
         type: 3}
       propertyPath: amountOfBirds
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2232896840209483434, guid: 39ef5fa9753da7048a54d2a9f04caece,
+        type: 3}
+      propertyPath: attackDistance
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39ef5fa9753da7048a54d2a9f04caece, type: 3}
