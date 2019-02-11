@@ -209,7 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6678333180eb2945b1eca7315a7e1e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 40
+  moveSpeed: 10
   moveSpeedSmoothing: 0.05
   facingRight: 0
   knockbackForce: 10
@@ -230,7 +230,9 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   states: 0
   attackDistance: 10
+  attackSpeed: 50
   target: {fileID: 0}
+  flockManager: {fileID: 0}
 --- !u!50 &7251290568119187996
 Rigidbody2D:
   serializedVersion: 4

@@ -9,53 +9,60 @@ public class Bird : BaseEntity
     [Header("Bird Setup")]
     public BIRD_STATE states;
     [SerializeField] private float attackDistance;
+    [SerializeField] private float attackSpeed;
     [SerializeField] private Transform target;
     [SerializeField] private FlockManager flockManager;
 
-    private Transform flock;
-    private CircleCollider2D flockCollider;
+    [SerializeField] private CircleCollider2D flockCollider;
 
-    private float timeUntilPickNextDirection = 3f;
     private bool tooFarFromFlock;
-    [HideInInspector] public bool hasAttacked = false;
+    private float timeUntilPickNextDirection = 3f;
+
     private Vector3 startPos;
+    private Vector2 movement;
 
     protected override void Awake()
     {
         base.Awake();
-        animator = GetComponentInChildren<Animator>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        flock = GetComponentInParent<FlockManager>().transform;
-        flockCollider = flock.GetComponentInParent<CircleCollider2D>();
-        flockManager = GetComponentInParent<FlockManager>();
-        target = FindObjectOfType<Player>().transform;
-
         states = BIRD_STATE.IDLE;
     }
 
     private void Start()
     {
+        animator = GetComponentInChildren<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        target = FindObjectOfType<Player>().transform;
+        flockManager = GetComponentInParent<FlockManager>();
         StartCoroutine(EnemyFSM());
         startPos = transform.position;
-        xMove = PickNewDirection() * moveSpeed * Time.deltaTime;
+        movement = PickNewDirection();
     }
 
-    protected override void FixedUpdate()
+    protected override void Update()
     {
-        base.FixedUpdate();
-        Move();
+        HandleKnockback();
+        if(!knockback)
+        {
+            Move();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        flockManager.hasPickedBirdToAttack = false;
     }
 
     protected override void Move()
     {
-        Vector2 targetVelocity = new Vector2(xMove.x * 10f, xMove.y * 10f);
-        rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, moveSpeedSmoothing);
+        Vector2 targetVelocity = new Vector2(movement.x, movement.y);
+        //rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, moveSpeedSmoothing);
+        transform.Translate(targetVelocity * moveSpeed * Time.deltaTime);
 
-        if (xMove.x > 0 && !facingRight)
+        if (movement.x > 0 && !facingRight)
         {
             Flip();
         }
-        else if (xMove.x < 0 && facingRight)
+        else if (movement.x < 0 && facingRight)
         {
             Flip();
         }
@@ -65,19 +72,19 @@ public class Bird : BaseEntity
     {
         while (true)
         {
-            Debug.Log("RUNNING");
             yield return StartCoroutine(states.ToString());
         }
     }
 
     IEnumerator IDLE()
     {
+        Debug.Log("IDLEING");
+        animator.SetBool("isFlying", true);
         while (states == BIRD_STATE.IDLE)
         {
-            animator.SetBool("isFlying", true);
             if (timeUntilPickNextDirection <= 0 || tooFarFromFlock)
             {
-                xMove = PickNewDirection() * moveSpeed * Time.deltaTime;
+                movement = PickNewDirection();
                 timeUntilPickNextDirection = 3f;
             }
 
@@ -88,37 +95,37 @@ public class Bird : BaseEntity
 
     IEnumerator ATTACK()
     {
+        Debug.Log("ATTACKING");
+        animator.SetTrigger("targetAquired");
+        yield return new WaitForSeconds(0.5f);
+        Vector2 targetPos = target.position - transform.position;
+        moveSpeed = attackSpeed;
+        movement = targetPos.normalized;
+
         while (states == BIRD_STATE.ATTACK)
         {
-            animator.SetTrigger("targetAquired");
-            yield return new WaitForSeconds(0.3f);
-            hasAttacked = true;
-            Vector2 targetPos = target.position - transform.position;
-            xMove = targetPos.normalized * 100 * Time.deltaTime;
-            yield return new WaitForSeconds(0f);
+            yield return new WaitForSeconds(.8f);
+            states = BIRD_STATE.RESET;
+            yield return StartCoroutine(states.ToString());
         }
     }
 
     IEnumerator RESET()
     {
+        Debug.Log("RESETTING");
+        moveSpeed = 10f;
+        movement = (startPos - transform.position).normalized;
         while (states == BIRD_STATE.RESET)
         {
-            if (transform.position != startPos)
-            {
-                xMove = startPos * moveSpeed * Time.deltaTime;
-            }
-
-            hasAttacked = false;
-            states = BIRD_STATE.IDLE;
-            yield return StartCoroutine(states.ToString());
+            yield return new WaitForSeconds(0f);
         }
     }
 
     private Vector2 PickNewDirection()
     {
         Vector2 myPos = transform.position;
-        Vector2 flockPos = flock.position;
-        Vector2 newDir = (flockPos + Random.insideUnitCircle * flockCollider.radius) - myPos;
+        Vector2 flockPos = flockManager.transform.position;
+        Vector2 newDir = (flockPos + Random.insideUnitCircle * flockManager.maxIdleFlyDistance) - myPos;
         return newDir.normalized;
     }
 
@@ -140,10 +147,18 @@ public class Bird : BaseEntity
 
         if (other.CompareTag("Player") && states == BIRD_STATE.ATTACK)
         {
-            flockManager.picked = false;
             states = BIRD_STATE.RESET;
             StartCoroutine(states.ToString());
         }
+
+        if(other.CompareTag("BirdReset") && states == BIRD_STATE.RESET)
+        {
+            Debug.Log("has reset");
+            flockManager.hasPickedBirdToAttack = false;
+            states = BIRD_STATE.IDLE;
+            StartCoroutine(states.ToString());
+        }
+
     }
 
     private void OnTriggerExit2D(Collider2D other)

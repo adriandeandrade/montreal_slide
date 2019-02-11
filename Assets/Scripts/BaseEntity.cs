@@ -123,7 +123,7 @@ public class BaseEntity : MonoBehaviour, IDamageable
         spriteRenderer.color = color;
     }
 
-    private void HandleKnockback()
+    protected void HandleKnockback()
     {
         if (knockback)
         {
