@@ -9,6 +9,12 @@ public class Player : BaseEntity
     [SerializeField] private float jumpHeightMultiplier;
     [SerializeField] private Color shieldBreakColor;
     public UnityEvent OnGetShield;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip landSound;
+    [SerializeField] private AudioClip pickUpItemSound;
+    [SerializeField] private AudioClip dealDamage;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip takeDamage;
 
     [Header("Player Components")]
     [SerializeField] private JumpMeter jumpMeter;
@@ -95,6 +101,7 @@ public class Player : BaseEntity
         jumpAmount = amount;
         isJumping = true;
         animator.SetBool("IsJumping", true);
+        audioSource.PlayOneShot(jumpSound);
     }
 
     public void ThrowSnowball()
@@ -115,6 +122,7 @@ public class Player : BaseEntity
         isJumping = false;
         animator.SetBool("IsJumping", false);
         animator.SetBool("GotHurt", false);
+        audioSource.PlayOneShot(landSound);
     }
 
     public void OnShield()
@@ -133,6 +141,7 @@ public class Player : BaseEntity
     public override void TakeDamage(int amount, Transform objectHit)
     {
         Knockback(objectHit, damageBlipColor);
+        audioSource.PlayOneShot(takeDamage);
         healthManager.LoseHealth(amount);
     }
 
@@ -146,6 +155,7 @@ public class Player : BaseEntity
                 inventory.HasShield = false;
                 shieldUI.GetComponent<Animator>().SetTrigger("ShieldBreak");
                 isGettingDamaged = true;
+                
             }
             else if (!inventory.HasShield)
             {
@@ -169,6 +179,7 @@ public class Player : BaseEntity
                 item.Init();
                 Destroy(other.gameObject);
                 isPickingUp = true;
+                audioSource.PlayOneShot(pickUpItemSound);
             }
         }
     }

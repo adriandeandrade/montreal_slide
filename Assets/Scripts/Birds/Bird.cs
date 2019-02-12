@@ -97,7 +97,7 @@ public class Bird : BaseEntity
     {
         Debug.Log("ATTACKING");
         animator.SetTrigger("targetAquired");
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         Vector2 targetPos = target.position - transform.position;
         moveSpeed = attackSpeed;
         movement = targetPos.normalized;
