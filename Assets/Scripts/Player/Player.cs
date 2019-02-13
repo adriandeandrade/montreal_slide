@@ -1,158 +1,204 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Player : PhysicsObject, IDamageable
+public class Player : BaseEntity
 {
-    [SerializeField] private int maxSnowballs = 5;
-    [SerializeField] private int currentSnowballs;
-    [SerializeField] private int maxHealth = 3;
-    [SerializeField] private float knockbackAmount;
+    [Header("Player Setup")]
+    [SerializeField] private float jumpHeightMultiplier;
+    [SerializeField] private Color shieldBreakColor;
+    public UnityEvent OnGetShield;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip landSound;
+    [SerializeField] private AudioClip pickUpItemSound;
+    [SerializeField] private AudioClip dealDamage;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip takeDamage;
 
-    public float maxSpeed;
-    public float jumpHeightModifier;
+    [Header("Player Components")]
+    [SerializeField] private JumpMeter jumpMeter;
+    [SerializeField] private PlayerShooting playerShooting;
+    [SerializeField] private Inventory inventory;
+    [SerializeField] private HealthManager healthManager;
+    [SerializeField] private GameObject jumpMeterUI;
+    [SerializeField] private GameObject shieldUI;
 
-    private float jumpVelocity;
+    public bool isPickingUp;
+    private bool isThrowing;
+    private float jumpAmount;
 
-    public enum FacingDirection { LEFT, RIGHT };
-    private FacingDirection facing;
-
-    public enum PlayerStates { IDLE, RUNNING, JUMPING };
-    private PlayerStates playerState;
-
-    private Vector2 movement;
-
-    private SpriteRenderer spriteRenderer;
-    private Animator animator;
-    private PlayerShooting shooting;
-    private JumpMeter jumpMeter;
-
-    private int health;
-    public int Health
+    protected override void Awake()
     {
-        get
-        {
-            return health;
-        }
-        set
-        {
-            health = value;
-        }
-    }
+        base.Awake();
 
-    void Awake()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
         jumpMeter = GetComponent<JumpMeter>();
+        playerShooting = GetComponent<PlayerShooting>();
+        healthManager = FindObjectOfType<HealthManager>();
+
+        if (OnGetShield == null)
+        {
+            OnGetShield = new UnityEvent();
+        }
     }
 
     private void Start()
     {
-        shooting = GetComponent<PlayerShooting>();
+        jumpMeterUI.SetActive(false);
     }
 
+    // Update is called once per frame
     protected override void Update()
     {
-        if (Input.GetMouseButtonDown(0) && HasAmmo()) // Left mouse button
-        {
-            shooting.Shoot();
-            currentSnowballs -= 1;
-        }
-
         base.Update();
-    }
+        xMove = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime, 0f);
+        animator.SetFloat("Speed", Mathf.Abs(xMove.x));
 
-    #region Movement and Animator Code
-
-    protected override void ComputeVelocity()
-    {
-        movement = Vector2.zero;
-        movement.x = Input.GetAxis("Horizontal");
-
-        UpdateFacingDirection();
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !knockback && !isThrowing)
         {
+            jumpMeterUI.SetActive(true);
             StartCoroutine(jumpMeter.CalculateJumpForce());
         }
 
-        targetVelocity = movement * maxSpeed;
 
-        if (isGrounded)
+        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing && inventory.CurrentSnowballs > 0)
         {
-            animator.SetBool("IsJumping", false);
+            if (MouseOnLeft() && facingRight)
+            {
+                Flip();
+                animator.SetBool("Throwing", true);
+                ThrowSnowball();
+            }
+            else if (!MouseOnLeft() && !facingRight)
+            {
+                Flip();
+                animator.SetBool("Throwing", true);
+                ThrowSnowball();
+            }
+            else
+            {
+                animator.SetBool("Throwing", true);
+                ThrowSnowball();
+            }
         }
-        else if (!isGrounded)
+
+    }
+
+    protected override void FixedUpdate()
+    {
+        base.FixedUpdate();
+
+        if (isJumping)
         {
-            animator.SetBool("IsJumping", true);
+            rBody2D.AddForce(Vector2.up * jumpAmount * jumpHeightMultiplier, ForceMode2D.Impulse);
+            isJumping = false;
         }
     }
 
-    public void UpdateFacingDirection()
+    public void Jump(float amount)
     {
-        if (movement.x > 0f) // Here we check if we are moving right.
-        {
-            facing = FacingDirection.RIGHT; // Set our players facing direction to RIGHT.
-            animator.SetBool("facingLeft", false); // Let the animator know that we arent facing left.
-            isMoving = true;
-            animator.SetBool("IsMoving", true);
-        }
-        else if (movement.x < 0f) // Check if we are moving left.
-        {
-            facing = FacingDirection.LEFT; // Set our players facing direction to LEFT.
-            animator.SetBool("facingLeft", true); // Left the animator know that we are facing left.
-            isMoving = true;
-            animator.SetBool("IsMoving", true);
-        }
-        else if (movement.x == 0)
-        {
-            isMoving = false;
-            animator.SetBool("IsMoving", false);
-        }
+        jumpMeterUI.SetActive(false);
+        jumpAmount = amount;
+        isJumping = true;
+        animator.SetBool("IsJumping", true);
+        audioSource.PlayOneShot(jumpSound);
     }
 
-    public void SetJumpVelocity(float jumpAmount)
+    public void ThrowSnowball()
     {
-        velocity.y = jumpAmount * jumpHeightModifier;
+        playerShooting.Shoot();
+        isThrowing = true;
     }
 
-    #endregion
-
-    private bool HasAmmo()
+    public void OnFinishedThrowing()
     {
-        if (currentSnowballs > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        animator.SetBool("Throwing", false);
+        isThrowing = false;
     }
 
-    public void TakeDamage(int amount)
+    public override void OnLanding()
     {
-        if (Health > 0)
-        {
+        base.OnLanding();
+        isJumping = false;
+        animator.SetBool("IsJumping", false);
+        animator.SetBool("GotHurt", false);
+        audioSource.PlayOneShot(landSound);
+    }
 
-        }
+    public void OnShield()
+    {
+        shieldUI.SetActive(true);
+    }
+
+    public override void Knockback(Transform other, Color color)
+    {
+        base.Knockback(other, color);
+        isJumping = false;
+        animator.SetBool("IsJumping", false);
+        animator.SetBool("GotHurt", true);
+    }
+
+    public override void TakeDamage(int amount, Transform objectHit)
+    {
+        Knockback(objectHit, damageBlipColor);
+        audioSource.PlayOneShot(takeDamage);
+        healthManager.LoseHealth(amount);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("GiantSnowball"))
+        if (other.CompareTag("Enemy") && !isGettingDamaged)
         {
-            other.gameObject.GetComponent<GiantSnowball>().KillBall();
-            SetJumpVelocity(knockbackAmount);
+            if (inventory.HasShield)
+            {
+                other.GetComponentInParent<BaseEntity>().Knockback(transform, Color.white);
+                inventory.HasShield = false;
+                shieldUI.GetComponent<Animator>().SetTrigger("ShieldBreak");
+                isGettingDamaged = true;
+                
+            }
+            else if (!inventory.HasShield)
+            {
+                other.GetComponentInParent<BaseEntity>().Knockback(transform, Color.white);
+                TakeDamage(1, other.transform);
+                isGettingDamaged = true;
+            }
+
+
+        }
+        else if (other.CompareTag("GiantSnowballInteract"))
+        {
+            Jump(1f);
+            other.GetComponentInParent<GiantSnowball>().KillBall();
+        }
+        else if (other.CompareTag("Item") && !isPickingUp)
+        {
+            Item item = other.GetComponent<Item>();
+            if (item != null)
+            {
+                item.Init();
+                Destroy(other.gameObject);
+                isPickingUp = true;
+                audioSource.PlayOneShot(pickUpItemSound);
+            }
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("GiantSnowball"))
+        if (other.CompareTag("Enemy") && isGettingDamaged)
         {
-            Debug.Log("Took damage");
+            isGettingDamaged = false;
+        }
+        else if (other.CompareTag("Bird") && isGettingDamaged)
+        {
+            isGettingDamaged = false;
+        }
+
+        if (other.CompareTag("Item") && isPickingUp)
+        {
+            isPickingUp = false;
         }
     }
+
 }
