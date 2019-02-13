@@ -4,9 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - GiantSnowball
   - GiantSnowballInteract
-  - PlayerInteract
+  - Wall
+  - Bird
+  - Enemy
+  - Item
+  - Flock
+  - BirdReset
   layers:
   - Default
   - TransparentFX
@@ -18,10 +22,10 @@ TagManager:
   - 
   - Ground
   - Player
-  - 
-  - 
-  - 
-  - 
+  - PostProcessing
+  - Item
+  - Snowball
+  - Damageable
   - 
   - 
   - 
@@ -52,4 +56,7 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 1103029057
+    locked: 0
+  - name: UI
+    uniqueID: 649629401
     locked: 0
