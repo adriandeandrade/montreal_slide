@@ -49,7 +49,7 @@ public class Bird : BaseEntity
 
     private void OnDestroy()
     {
-        flockManager.hasPickedBirdToAttack = false;
+        //flockManager.hasPickedBirdToAttack = false;
     }
 
     protected override void Move()
@@ -134,7 +134,7 @@ public class Bird : BaseEntity
     {
         Knockback(objectHit, damageBlipColor);
         animator.SetTrigger("hasDied");
-        flockManager.birds.Remove(this);
+        //flockManager.birds.Remove(this);
         Destroy(gameObject, 0.8f);
     }
 
@@ -154,11 +154,10 @@ public class Bird : BaseEntity
         if(other.CompareTag("BirdReset") && states == BIRD_STATE.RESET)
         {
             Debug.Log("has reset");
-            flockManager.hasPickedBirdToAttack = false;
+            //flockManager.hasPickedBirdToAttack = false;
             states = BIRD_STATE.IDLE;
             StartCoroutine(states.ToString());
         }
-
     }
 
     private void OnTriggerExit2D(Collider2D other)

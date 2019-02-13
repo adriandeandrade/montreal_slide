@@ -156,10 +156,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7251290568119187998}
   - component: {fileID: 7251290568119187999}
-  - component: {fileID: 7251290568119187997}
   - component: {fileID: 7251290568119187996}
+  - component: {fileID: 8819021259197638185}
   m_Layer: 13
-  m_Name: Bird
+  m_Name: Entity_Bird
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,42 +197,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0.24}
   serializedVersion: 2
   m_Radius: 0.46
---- !u!114 &7251290568119187997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7251290568119187993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6678333180eb2945b1eca7315a7e1e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 10
-  moveSpeedSmoothing: 0.05
-  facingRight: 0
-  knockbackForce: 10
-  knockbackTime: 0.9
-  damageBlipColor: {r: 0.7264151, g: 0, b: 0, a: 1}
-  usesJumping: 0
-  OnLandEvent:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  groundCheck: {fileID: 0}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 0
-  animator: {fileID: 0}
-  rBody2D: {fileID: 0}
-  spriteRenderer: {fileID: 0}
-  states: 0
-  attackDistance: 10
-  attackSpeed: 50
-  target: {fileID: 0}
-  flockManager: {fileID: 0}
 --- !u!50 &7251290568119187996
 Rigidbody2D:
   serializedVersion: 4
@@ -254,3 +218,21 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &8819021259197638185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7251290568119187993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b1fec5d7278ff248b73fc04f3dd8339, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackSpeed: 3
+  idleSpeed: 8
+  target: {fileID: 0}
+  flockBounds: {fileID: 0}
+  flockManager: {fileID: 0}
+  isIdle: 1

@@ -11,6 +11,8 @@ TagManager:
   - Item
   - Flock
   - BirdReset
+  - FlockActivator
+  - KillZone
   layers:
   - Default
   - TransparentFX

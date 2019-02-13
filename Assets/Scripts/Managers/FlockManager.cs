@@ -10,24 +10,20 @@ public class FlockManager : MonoBehaviour
     [SerializeField] private float attackDistance;
     [Tooltip("How far away the birds can fly from the center of their flock.")]
     public float maxIdleFlyDistance;
+    [Tooltip("This is a gameobject with a collider on it which will activate the attack sequence once the players walks in it.")]
+    [SerializeField] private GameObject flockActivator;
 
-    [HideInInspector] public bool hasPickedBirdToAttack = false;
+    public bool attackHasStarted = false;
 
     [SerializeField] private CircleCollider2D idleFlyRadius;
     private Transform player;
-    [HideInInspector] public List<Bird> birds = new List<Bird>();
+    public List<BirdNew> birds = new List<BirdNew>();
 
     private void Awake()
     {
         player = FindObjectOfType<Player>().transform;
         idleFlyRadius = GetComponent<CircleCollider2D>();
         InitializeFlock();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
     }
 
     private void InitializeFlock()
@@ -38,29 +34,46 @@ public class FlockManager : MonoBehaviour
         {
             GameObject birdInstance = Instantiate(Resources.Load("Prefabs/Entites/Entity_Bird", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
             birdInstance.transform.SetParent(transform);
-            birds.Add(birdInstance.GetComponent<Bird>());
+            birdInstance.GetComponent<BirdNew>().flockManager = this;
+            birdInstance.GetComponent<BirdNew>().flockBounds = idleFlyRadius;
+            birds.Add(birdInstance.GetComponent<BirdNew>());
         }
     }
 
-    void Update()
+    IEnumerator Attack()
     {
-        if(birds.Count > 0)
+        foreach (BirdNew bird in birds)
         {
-            float distanceFromFlock = Vector2.Distance(player.position, transform.position);
-
-            if (distanceFromFlock <= idleFlyRadius.radius + attackDistance && !hasPickedBirdToAttack)
+            if(bird != null)
             {
-                hasPickedBirdToAttack = true;
-                int pickRandomBird = Random.Range(0, birds.Count);
-                birds[pickRandomBird].states = Bird.BIRD_STATE.ATTACK;
-                birds[pickRandomBird].StartCoroutine(birds[pickRandomBird].states.ToString());
+                bird.GetComponentInChildren<Animator>().SetBool("isAttacking", true);
+                yield return new WaitForSecondsRealtime(0.8f);
+                bird.Launch();
             }
         }
+
+        attackHasStarted = false;
+        birds.Clear();
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, idleFlyRadius.radius);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && !attackHasStarted)
+        {
+            Debug.Log("START");
+
+            StartCoroutine(Attack());
+            attackHasStarted = true;
+            foreach (BirdNew bird in birds)
+            {
+                bird.isIdle = false;
+            }
+        }
     }
 }
