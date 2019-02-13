@@ -10,6 +10,14 @@ public class Inventory : MonoBehaviour
     private bool hasShield = false;
     private bool hasKey = false;
 
+    public int MaxSnowballs
+    {
+        get
+        {
+            return maxAmountOfSnowballs;
+        }
+    }
+
     public bool HasShield
     {
         get
