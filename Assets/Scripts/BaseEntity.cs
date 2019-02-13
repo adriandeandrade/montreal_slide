@@ -9,13 +9,9 @@ public class BaseEntity : MonoBehaviour, IDamageable
     [Range(1f, 150f)] [SerializeField] protected float moveSpeed;
     [SerializeField] protected float moveSpeedSmoothing = 0.5f;
     [SerializeField] protected bool facingRight;
-    [Tooltip("Choose a direction if not using player input.")]
 
     [Header("Other Setup")]
-    [SerializeField] protected float knockbackForce;
-    [SerializeField] protected float knockbackTime;
     [SerializeField] protected Color damageBlipColor;
-    [SerializeField] protected bool usesJumping;
     [SerializeField] protected UnityEvent OnLandEvent;
 
     [Header("Collision Fields")]
@@ -30,12 +26,8 @@ public class BaseEntity : MonoBehaviour, IDamageable
     protected Vector2 xMove;
     protected bool isJumping;
     protected bool isGrounded;
-    protected bool knockback;
-    protected bool isGettingDamaged;
-    protected float knockBackCounter;
 
     private const float groundedRadius = 0.2f;
-
     protected Vector2 Velocity;
 
     protected virtual void Awake()
@@ -52,20 +44,12 @@ public class BaseEntity : MonoBehaviour, IDamageable
 
     protected virtual void Update()
     {
-        HandleKnockback();
-
-        if(!knockback)
-        {
-            Move();
-        }
+        Move();
     }
 
     protected virtual void FixedUpdate()
     {
-        if(usesJumping)
-        {
-            CheckForGround();
-        }
+        CheckForGround();
     }
 
     private void CheckForGround()
@@ -102,41 +86,10 @@ public class BaseEntity : MonoBehaviour, IDamageable
         }
     }
 
-    public virtual void OnLanding()
-    {
-
-    }
-
     protected void Flip()
     {
         facingRight = !facingRight;
         spriteRenderer.flipX = facingRight;
-    }
-
-    public virtual void Knockback(Transform other, Color color)
-    {
-        knockBackCounter = knockbackTime;
-        knockback = true;
-        Vector2 hitDirection = transform.position - other.transform.position;
-        rBody2D.velocity = hitDirection.normalized * knockbackForce;
-        rBody2D.velocity = new Vector2(rBody2D.velocity.x, knockbackForce);
-        spriteRenderer.color = color;
-    }
-
-    protected void HandleKnockback()
-    {
-        if (knockback)
-        {
-            if (knockBackCounter > 0)
-            {
-                knockBackCounter -= Time.deltaTime;
-            }
-            else if (knockBackCounter <= 0)
-            {
-                spriteRenderer.color = Color.white;
-                knockback = false;
-            }
-        }
     }
 
     protected bool MouseOnLeft()
@@ -158,4 +111,9 @@ public class BaseEntity : MonoBehaviour, IDamageable
     {
         
     }
+    public virtual void OnLanding()
+    {
+
+    }
+
 }

@@ -7,24 +7,60 @@ public class BirdNew : MonoBehaviour, IDamageable
     [Header("Bird Setup")]
     [SerializeField] private float attackSpeed;
     [SerializeField] private float idleSpeed;
-    [SerializeField] private GameObject target;
+    private GameObject target;
     public CircleCollider2D flockBounds;
     public FlockManager flockManager;
 
-    [HideInInspector] public bool isIdle = true;
+    private float timeUntilPickNextDirection = 3f;
+    private bool isIdle = true;
     private bool facingRight;
     private bool tooFarFromFlock;
     private bool launch;
-    private float timeUntilPickNextDirection = 3f;
 
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rBody;
     private Vector3 movement;
+
+    public float AttackSpeed
+    {
+        get
+        {
+            return attackSpeed;
+        }
+        set
+        {
+            attackSpeed = value;
+        }
+    }
+    public float IdleSpeed
+    {
+        get
+        {
+            return idleSpeed;
+        }
+        set
+        {
+            idleSpeed = value;
+        }
+    }
+    public bool IsIdle
+    {
+        get
+        {
+            return isIdle;
+        }
+        set
+        {
+            isIdle = value;
+        }
+    }
 
     private void Start()
     {
-        animator = GetComponentInChildren<Animator>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponent<Animator>();
+        rBody = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         target = FindObjectOfType<Player>().gameObject;
 
         movement = PickNewDirection();
@@ -47,10 +83,9 @@ public class BirdNew : MonoBehaviour, IDamageable
             }
         }
 
-        if(launch)
+        if (launch)
         {
-            //Vector3 direction = target.transform.position - transform.position;
-            transform.Translate(movement * attackSpeed * Time.deltaTime);
+            transform.Translate(movement.normalized * attackSpeed * Time.deltaTime);
         }
     }
 
@@ -91,22 +126,26 @@ public class BirdNew : MonoBehaviour, IDamageable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.CompareTag("Flock"))
+        if(other.CompareTag("Player"))
+        {
+            rBody.simulated = false;
+            TakeDamage(1, transform);
+        }
+
+        if (other.CompareTag("Flock"))
         {
             tooFarFromFlock = false;
-        } else if(other.CompareTag("KillZone"))
+        }
+        else if (other.CompareTag("KillZone"))
         {
-            Destroy(gameObject);
-        } else if(other.CompareTag("Player"))
-        {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
     public void TakeDamage(int amount, Transform objectHit)
     {
         animator.SetTrigger("hasDied");
-        gameObject.SetActive(false);
+        // Object will get deleted with an animatione event.
     }
 
     private void OnTriggerExit2D(Collider2D other)

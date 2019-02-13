@@ -8,13 +8,19 @@ public class Player : BaseEntity
     [Header("Player Setup")]
     [SerializeField] private float jumpHeightMultiplier;
     [SerializeField] private Color shieldBreakColor;
-    public UnityEvent OnGetShield;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private float knockbackForce;
+    [SerializeField] private float knockbackTime;
+
+    [Header("Player Sounds")]
     [SerializeField] private AudioClip landSound;
     [SerializeField] private AudioClip pickUpItemSound;
     [SerializeField] private AudioClip dealDamage;
     [SerializeField] private AudioClip jumpSound;
     [SerializeField] private AudioClip takeDamage;
+
+    [Header("Other Player Events")]
+    public UnityEvent OnGetShield;
 
     [Header("Player Components")]
     [SerializeField] private JumpMeter jumpMeter;
@@ -22,11 +28,14 @@ public class Player : BaseEntity
     [SerializeField] private Inventory inventory;
     [SerializeField] private HealthManager healthManager;
     [SerializeField] private GameObject jumpMeterUI;
-    [SerializeField] private GameObject shieldUI;
+    public GameObject shieldUI;
 
     public bool isPickingUp;
     private bool isThrowing;
+    public bool interacting;
+    private bool knockback;
     private float jumpAmount;
+    public bool isGettingDamaged;
 
     protected override void Awake()
     {
@@ -35,6 +44,7 @@ public class Player : BaseEntity
         jumpMeter = GetComponent<JumpMeter>();
         playerShooting = GetComponent<PlayerShooting>();
         healthManager = FindObjectOfType<HealthManager>();
+        inventory = Inventory.instance;
 
         if (OnGetShield == null)
         {
@@ -47,21 +57,27 @@ public class Player : BaseEntity
         jumpMeterUI.SetActive(false);
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
-        base.Update();
+        if (GetComponent<Knockback>() && !knockback)
+        {
+            knockback = true;
+        }
+        else if (!GetComponent<Knockback>() && knockback)
+        {
+            knockback = false;
+        }
+
         xMove = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime, 0f);
         animator.SetFloat("Speed", Mathf.Abs(xMove.x));
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !knockback && !isThrowing)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isThrowing && !knockback)
         {
             jumpMeterUI.SetActive(true);
             StartCoroutine(jumpMeter.CalculateJumpForce());
         }
 
-
-        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing && inventory.CurrentSnowballs > 0)
+        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && isGrounded && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback)
         {
             if (MouseOnLeft() && facingRight)
             {
@@ -81,12 +97,16 @@ public class Player : BaseEntity
                 ThrowSnowball();
             }
         }
-
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+
+        if (!knockback)
+        {
+            Move();
+        }
 
         if (isJumping)
         {
@@ -130,46 +150,52 @@ public class Player : BaseEntity
         shieldUI.SetActive(true);
     }
 
-    public override void Knockback(Transform other, Color color)
-    {
-        base.Knockback(other, color);
-        isJumping = false;
-        animator.SetBool("IsJumping", false);
-        animator.SetBool("GotHurt", true);
-    }
-
     public override void TakeDamage(int amount, Transform objectHit)
     {
-        Knockback(objectHit, damageBlipColor);
-        audioSource.PlayOneShot(takeDamage);
-        healthManager.LoseHealth(amount);
+        if (!GetComponent<Knockback>())
+        {
+            gameObject.AddComponent<Knockback>().InitKnockback(knockbackTime, knockbackForce, objectHit);
+            isJumping = false;
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("GotHurt", true);
+            audioSource.PlayOneShot(takeDamage);
+        }
+
+        if (Inventory.instance.HasShield)
+        {
+            Debug.Log("Took no damage because shield.");
+            Inventory.instance.HasShield = false;
+            shieldUI.GetComponent<Animator>().SetTrigger("ShieldBreak");
+            return;
+        }
+
+        if (!Inventory.instance.HasShield)
+        {
+            Debug.Log("Took damage because no shield.");
+            healthManager.LoseHealth(amount);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy") && !isGettingDamaged)
-        {
-            if (inventory.HasShield)
-            {
-                inventory.HasShield = false;
-                shieldUI.GetComponent<Animator>().SetTrigger("ShieldBreak");
-                isGettingDamaged = true;
-                
-            }
-            else if (!inventory.HasShield)
-            {
-                TakeDamage(1, other.transform);
-                isGettingDamaged = true;
-            }
-
-
-        }
-        else if (other.CompareTag("GiantSnowballInteract"))
+        if (other.CompareTag("BreakSnowball") && !interacting)
         {
             Jump(1f);
             other.GetComponentInParent<GiantSnowball>().KillBall();
+            interacting = true;
         }
-        else if (other.CompareTag("Item") && !isPickingUp)
+
+        if (other.CompareTag("Enemy") && !isGettingDamaged)
+        {
+            TakeDamage(1, other.transform);
+            if(other.GetComponent<BirdNew>())
+            {
+                other.GetComponent<BirdNew>().TakeDamage(1, transform);
+            }
+            isGettingDamaged = true;
+        }
+
+        if (other.CompareTag("Item") && !isPickingUp)
         {
             Item item = other.GetComponent<Item>();
             if (item != null)
@@ -188,14 +214,15 @@ public class Player : BaseEntity
         {
             isGettingDamaged = false;
         }
-        else if (other.CompareTag("Bird") && isGettingDamaged)
-        {
-            isGettingDamaged = false;
-        }
 
         if (other.CompareTag("Item") && isPickingUp)
         {
             isPickingUp = false;
+        }
+
+        if (other.CompareTag("BreakSnowball") && interacting)
+        {
+            interacting = false;
         }
     }
 

@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 934450996}
   - component: {fileID: 934450995}
   m_Layer: 5
-  m_Name: SnowballUI
+  m_Name: CurrentSnowballs_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,7 +107,7 @@ RectTransform:
   - {fileID: 185661666}
   - {fileID: 1948151076}
   m_Father: {fileID: 1509243739206804385}
-  m_RootOrder: 5
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -502,7 +502,7 @@ GameObject:
   - component: {fileID: 1509243738546781155}
   - component: {fileID: 1509243738546781152}
   m_Layer: 5
-  m_Name: JumpBarWS
+  m_Name: JumpBar_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -521,7 +521,7 @@ RectTransform:
   m_Children:
   - {fileID: 1509243738244450520}
   m_Father: {fileID: 1509243739206804385}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -599,11 +599,12 @@ GameObject:
   - component: {fileID: 1509243739206804385}
   - component: {fileID: 1509243738583087221}
   - component: {fileID: 1509243738583087218}
-  - component: {fileID: 1509243738583087219}
   - component: {fileID: 1509243738583087216}
   - component: {fileID: 1509243738583087229}
   - component: {fileID: 1509243738583087231}
   - component: {fileID: 1509243738583087230}
+  - component: {fileID: 2081162788}
+  - component: {fileID: 1084563462}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -622,12 +623,11 @@ Transform:
   m_LocalPosition: {x: -45.62, y: -14.32, z: 2}
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_Children:
-  - {fileID: 1509243739230866759}
-  - {fileID: 1509243738757450550}
   - {fileID: 1509243738546781153}
   - {fileID: 1509243739343722416}
-  - {fileID: 1509243740265422428}
   - {fileID: 934450994}
+  - {fileID: 1509243740265422428}
+  - {fileID: 1509243739230866759}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -698,22 +698,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!70 &1509243738583087219
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509243738583087228}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.014457941, y: 0.033735275}
-  m_Size: {x: 0.7958689, y: 1.2657909}
-  m_Direction: 0
 --- !u!50 &1509243738583087216
 Rigidbody2D:
   serializedVersion: 4
@@ -750,10 +734,7 @@ MonoBehaviour:
   moveSpeed: 120
   moveSpeedSmoothing: 0.07
   facingRight: 0
-  knockbackForce: 20
-  knockbackTime: 0.5
   damageBlipColor: {r: 1, g: 0.3915094, b: 0.3915094, a: 1}
-  usesJumping: 1
   OnLandEvent:
     m_PersistentCalls:
       m_Calls:
@@ -779,6 +760,14 @@ MonoBehaviour:
   spriteRenderer: {fileID: 0}
   jumpHeightMultiplier: 50
   shieldBreakColor: {r: 0.22414559, g: 0.36634284, b: 0.6886792, a: 1}
+  audioSource: {fileID: 2081162788}
+  knockbackForce: 30
+  knockbackTime: 0.5
+  landSound: {fileID: 8300000, guid: d07acce7c6029bd4f807e7b6255af24a, type: 3}
+  pickUpItemSound: {fileID: 8300000, guid: 924718266b0291d4ea31b59ff05da8ef, type: 3}
+  dealDamage: {fileID: 8300000, guid: abd16b3d4687bd34f8dd9b1383eefe00, type: 3}
+  jumpSound: {fileID: 8300000, guid: 4fc89e91da29bae41990221e74c31fc2, type: 3}
+  takeDamage: {fileID: 8300000, guid: 55aea4a3905704d40a4fc72e82b02a57, type: 3}
   OnGetShield:
     m_PersistentCalls:
       m_Calls:
@@ -802,6 +791,8 @@ MonoBehaviour:
   jumpMeterUI: {fileID: 1509243738546781166}
   shieldUI: {fileID: 1509243740265422429}
   isPickingUp: 0
+  interacting: 0
+  isGettingDamaged: 0
 --- !u!114 &1509243738583087231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -830,58 +821,134 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldownBarUI: {fileID: 328799690083312581}
-  cooldownBarImage: {fileID: 1509243738499673585}
   snowBallPrefab: {fileID: 8007418614747927436, guid: c464e276ac1979c49be885e415056c93,
     type: 3}
+  cooldownBarImage: {fileID: 1509243738499673585}
+  snowballAmountText: {fileID: 1948151077}
   snowballSpeed: 60
   cooldown: 0.5
---- !u!1 &1509243738757450551
-GameObject:
+--- !u!82 &2081162788
+AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1509243738757450550}
-  - component: {fileID: 1509243738757450537}
-  m_Layer: 9
-  m_Name: DamageCol
-  m_TagString: Player
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1509243738757450550
-Transform:
+  m_GameObject: {fileID: 1509243738583087228}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!61 &1084563462
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509243738757450551}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1509243739206804385}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &1509243738757450537
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509243738757450551}
+  m_GameObject: {fileID: 1509243738583087228}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.014457941, y: 0.033735275}
-  m_Size: {x: 0.7958689, y: 1.2657909}
-  m_Direction: 0
+  m_Offset: {x: 0.02750206, y: 0.02750206}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.92, y: 1.92}
+    newSize: {x: 0.33, y: 0.62}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.86392593, y: 1.2819552}
+  m_EdgeRadius: 0
 --- !u!1 &1509243738827403138
 GameObject:
   m_ObjectHideFlags: 0
@@ -955,7 +1022,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1509243739206804385}
-  m_RootOrder: 0
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1509243739343722417
 GameObject:
@@ -970,7 +1037,7 @@ GameObject:
   - component: {fileID: 1509243739343722418}
   - component: {fileID: 1509243739343722419}
   m_Layer: 5
-  m_Name: CooldownBar
+  m_Name: CooldownBar_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -989,7 +1056,7 @@ RectTransform:
   m_Children:
   - {fileID: 1509243740322482328}
   m_Father: {fileID: 1509243739206804385}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1233,7 +1300,7 @@ GameObject:
   - component: {fileID: 1509243740265422431}
   - component: {fileID: 1509243740265422417}
   m_Layer: 9
-  m_Name: Shield
+  m_Name: Shield_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1251,7 +1318,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1509243739206804385}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1509243740265422430
 SpriteRenderer:
