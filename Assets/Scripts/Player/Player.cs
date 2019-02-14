@@ -8,16 +8,9 @@ public class Player : BaseEntity
     [Header("Player Setup")]
     [SerializeField] private float jumpHeightMultiplier;
     [SerializeField] private Color shieldBreakColor;
-    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private float knockbackForce;
     [SerializeField] private float knockbackTime;
-
-    [Header("Player Sounds")]
-    [SerializeField] private AudioClip landSound;
-    [SerializeField] private AudioClip pickUpItemSound;
-    [SerializeField] private AudioClip dealDamage;
-    [SerializeField] private AudioClip jumpSound;
-    [SerializeField] private AudioClip takeDamage;
 
     [Header("Other Player Events")]
     public UnityEvent OnGetShield;
@@ -44,6 +37,7 @@ public class Player : BaseEntity
         jumpMeter = GetComponent<JumpMeter>();
         playerShooting = GetComponent<PlayerShooting>();
         healthManager = FindObjectOfType<HealthManager>();
+        audioManager = FindObjectOfType<AudioManager>();
         inventory = Inventory.instance;
 
         if (OnGetShield == null)
@@ -71,13 +65,13 @@ public class Player : BaseEntity
         xMove = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime, 0f);
         animator.SetFloat("Speed", Mathf.Abs(xMove.x));
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isThrowing && !knockback)
+        if (Input.GetKeyDown(KeyCode.Space) && !knockback && !isJumping)
         {
             jumpMeterUI.SetActive(true);
             StartCoroutine(jumpMeter.CalculateJumpForce());
         }
 
-        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && isGrounded && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback)
+        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback & !isJumping)
         {
             if (MouseOnLeft() && facingRight)
             {
@@ -121,13 +115,20 @@ public class Player : BaseEntity
         jumpAmount = amount;
         isJumping = true;
         animator.SetBool("IsJumping", true);
-        audioSource.PlayOneShot(jumpSound);
     }
 
     public void ThrowSnowball()
     {
-        playerShooting.Shoot();
-        isThrowing = true;
+        if(!isGrounded)
+        {
+            playerShooting.Shoot();
+            isThrowing = false;
+            animator.SetBool("Throwing", false);
+        } else
+        {
+            playerShooting.Shoot();
+            isThrowing = true;
+        }
     }
 
     public void OnFinishedThrowing()
@@ -142,7 +143,6 @@ public class Player : BaseEntity
         isJumping = false;
         animator.SetBool("IsJumping", false);
         animator.SetBool("GotHurt", false);
-        audioSource.PlayOneShot(landSound);
     }
 
     public void OnShield()
@@ -158,7 +158,6 @@ public class Player : BaseEntity
             isJumping = false;
             animator.SetBool("IsJumping", false);
             animator.SetBool("GotHurt", true);
-            audioSource.PlayOneShot(takeDamage);
         }
 
         if (Inventory.instance.HasShield)
@@ -200,10 +199,10 @@ public class Player : BaseEntity
             Item item = other.GetComponent<Item>();
             if (item != null)
             {
+                isPickingUp = true;
                 item.Init();
                 Destroy(other.gameObject);
-                isPickingUp = true;
-                audioSource.PlayOneShot(pickUpItemSound);
+                FindObjectOfType<AudioManager>().Play("player_pickup");
             }
         }
     }
