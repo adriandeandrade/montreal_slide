@@ -1,31 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!61 &3639779368030214123
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7380307505545843579}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.014675647, y: 0.5183524}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.81, y: 1.08}
-    newSize: {x: 0.81, y: 1.06}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.78064865, y: 0.02209711}
-  m_EdgeRadius: 0
 --- !u!1 &1723259713020645900
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,6 +63,32 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.768449, y: 0.027504265}
   m_EdgeRadius: 0
+--- !u!61 &3639779368030214123
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7380307505545843579}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.014675647, y: 0.5183524}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.81, y: 1.08}
+    newSize: {x: 0.81, y: 1.06}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.78064865, y: 0.02209711}
+  m_EdgeRadius: 0
 --- !u!1001 &110421158965704270
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -100,6 +100,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Building_Rightt
+      objectReference: {fileID: 0}
+    - target: {fileID: 7486202932881515829, guid: 39a215f931060ac44a9f891323585e19,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1407618177664134630, guid: 39a215f931060ac44a9f891323585e19,
         type: 3}
@@ -456,6 +461,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Building_Left
+      objectReference: {fileID: 0}
+    - target: {fileID: 7708326192378794272, guid: db41bfeafccdaba498eb7cce72b5d45e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4768031404636443119, guid: db41bfeafccdaba498eb7cce72b5d45e,
         type: 3}
