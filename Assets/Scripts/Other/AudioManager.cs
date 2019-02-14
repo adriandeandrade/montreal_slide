@@ -8,8 +8,21 @@ public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
 
+    public static AudioManager instance;
+
     private void Awake()
     {
+        if(instance == null)
+        {
+            instance = this;
+        } else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        DontDestroyOnLoad(gameObject);
+
         foreach (Sound sound in sounds)
         {
             sound.source = gameObject.AddComponent<AudioSource>();
@@ -23,11 +36,18 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         Play("Theme");
+        Play("CitySound");
     }
 
     public void Play(string name)
     {
        Sound s = Array.Find(sounds, sound => sound.name == name);
-        s.source.Play();
+        if(s != null)
+        {
+            s.source.Play();
+        } else
+        {
+            Debug.Log("Could not find sound:" + name);
+        }
     }
 }

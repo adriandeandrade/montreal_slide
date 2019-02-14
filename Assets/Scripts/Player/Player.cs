@@ -8,7 +8,6 @@ public class Player : BaseEntity
     [Header("Player Setup")]
     [SerializeField] private float jumpHeightMultiplier;
     [SerializeField] private Color shieldBreakColor;
-    [SerializeField] private AudioManager audioManager;
     [SerializeField] private float knockbackForce;
     [SerializeField] private float knockbackTime;
 
@@ -37,7 +36,6 @@ public class Player : BaseEntity
         jumpMeter = GetComponent<JumpMeter>();
         playerShooting = GetComponent<PlayerShooting>();
         healthManager = FindObjectOfType<HealthManager>();
-        audioManager = FindObjectOfType<AudioManager>();
         inventory = Inventory.instance;
 
         if (OnGetShield == null)
@@ -115,6 +113,7 @@ public class Player : BaseEntity
         jumpAmount = amount;
         isJumping = true;
         animator.SetBool("IsJumping", true);
+        AudioManager.instance.Play("player_jump_moan");
     }
 
     public void ThrowSnowball()
@@ -124,9 +123,11 @@ public class Player : BaseEntity
             playerShooting.Shoot();
             isThrowing = false;
             animator.SetBool("Throwing", false);
+            AudioManager.instance.Play("player_throw");
         } else
         {
             playerShooting.Shoot();
+            AudioManager.instance.Play("player_throw");
             isThrowing = true;
         }
     }
@@ -143,6 +144,7 @@ public class Player : BaseEntity
         isJumping = false;
         animator.SetBool("IsJumping", false);
         animator.SetBool("GotHurt", false);
+        AudioManager.instance.Play("player_landing");
     }
 
     public void OnShield()
@@ -172,6 +174,7 @@ public class Player : BaseEntity
         {
             Debug.Log("Took damage because no shield.");
             healthManager.LoseHealth(amount);
+            AudioManager.instance.Play("player_take_damage");
         }
     }
 
@@ -179,7 +182,7 @@ public class Player : BaseEntity
     {
         if (other.CompareTag("BreakSnowball") && !interacting)
         {
-            Jump(1f);
+            Jump(0.5f);
             other.GetComponentInParent<GiantSnowball>().KillBall();
             interacting = true;
         }

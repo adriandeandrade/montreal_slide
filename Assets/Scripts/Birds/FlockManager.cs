@@ -18,12 +18,14 @@ public class FlockManager : MonoBehaviour
     [HideInInspector] public bool attackHasStarted = false;
 
     private CircleCollider2D idleFlyRadius;
+    private AudioSource flockAudio;
 
     [HideInInspector] public List<BirdNew> birds = new List<BirdNew>();
 
     private void Awake()
     {
         idleFlyRadius = GetComponent<CircleCollider2D>();
+        flockAudio = GetComponent<AudioSource>();
         InitializeFlock();
     }
 
@@ -58,5 +60,6 @@ public class FlockManager : MonoBehaviour
 
         attackHasStarted = false;
         birds.Clear();
+        flockAudio.Stop();
     }
 }

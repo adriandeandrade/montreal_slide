@@ -108,6 +108,7 @@ public class BirdNew : MonoBehaviour, IDamageable
     {
         launch = true;
         movement = target.transform.position - transform.position;
+        AudioManager.instance.Play("bird_attack");
     }
 
     protected void Flip()
