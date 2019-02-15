@@ -6,22 +6,28 @@ public class GiantSnowball : BaseEntity
 {
     [Header("Giant Snowball Setup")]
     [SerializeField] private BoxCollider2D interactCollider;
-    [SerializeField] private CircleCollider2D damageCollider;
     [SerializeField] private GameObject snowBallPrefab;
 
-    // Start is called before the first frame update
-    protected  override void Awake()
+    protected override void Awake()
     {
         base.Awake();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         animator = GetComponentInChildren<Animator>();
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();
-        xMove = Vector2.left* moveSpeed * Time.deltaTime;
+
+        if(!facingRight)
+        {
+            xMove = Vector2.left * moveSpeed * Time.deltaTime;
+        } else
+        {
+            xMove = Vector2.right * moveSpeed * Time.deltaTime;
+        }
+
+        
     }
 
     public void KillBall()
@@ -43,10 +49,5 @@ public class GiantSnowball : BaseEntity
         }
 
         Destroy(gameObject);
-    }
-
-    public override void Knockback(Transform other, Color color)
-    {
-        base.Knockback(other, color);
     }
 }

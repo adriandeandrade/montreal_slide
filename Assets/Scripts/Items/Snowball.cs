@@ -22,7 +22,7 @@ public class Snowball : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            Bird bird = other.gameObject.GetComponentInParent<Bird>();
+            BirdNew bird = other.gameObject.GetComponent<BirdNew>();
             if (bird != null)
             {
                 bird.GetComponent<Rigidbody2D>().simulated = false;
