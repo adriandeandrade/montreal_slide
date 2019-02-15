@@ -6,6 +6,7 @@ public class MainMenuController : MonoBehaviour
 {
     private LevelFader levelFader;
     [SerializeField] private GameObject helpMenu;
+    [SerializeField] private GameObject notFullGame;
 
     private void Awake()
     {
@@ -22,6 +23,12 @@ public class MainMenuController : MonoBehaviour
 
     public void Play()
     {
+        //levelFader.FadeToLevel(1);
+        notFullGame.SetActive(true);
+    }
+
+    public void Demo()
+    {
         levelFader.FadeToLevel(1);
     }
 
@@ -33,6 +40,11 @@ public class MainMenuController : MonoBehaviour
     public void ExitHelpMenu()
     {
         helpMenu.SetActive(false);
+    }
+
+    public void ExitDemoMenu()
+    {
+        notFullGame.SetActive(false);
     }
 
     public void Quit()

@@ -10,6 +10,16 @@ public class Inventory : MonoBehaviour
     private bool hasShield = false;
     private bool hasKey = false;
 
+    public static Inventory instance;
+
+    private void Start()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
+
     public int MaxSnowballs
     {
         get
