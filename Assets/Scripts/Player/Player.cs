@@ -3,75 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Player : MonoBehaviour, IDamageable
+public class Player : BaseEntity
 {
-    [Header("Player Fields")]
-    [SerializeField] private JumpMeter jumpMeter;
-    [SerializeField] private PlayerShooting shooting;
-    [SerializeField] private Inventory inventory;
-    [SerializeField] private GameObject jumpMeterUI;
-    [SerializeField] private GameObject shieldObject;
-    [Range(1f, 150f)] [SerializeField] private float moveSpeed;
-    [SerializeField] private float movementSmoothingAmount = .05f;
+    [Header("Player Setup")]
     [SerializeField] private float jumpHeightMultiplier;
-    [SerializeField] private float knockBackForce;
-    [SerializeField] private float knockBackTime;
-    [SerializeField] private int currentSnowballs;
-    [SerializeField] private Color hurtColor;
-    [SerializeField] private Color blueColor;
-    private float knockBackCounter;
+    [SerializeField] private Color shieldBreakColor;
+    [SerializeField] private float knockbackForce;
+    [SerializeField] private float knockbackTime;
 
-    private float xMove = 0f;
-    private float jumpAmount;
-    private bool isGrounded;
-    private bool isDamaged;
-    [HideInInspector] public bool isPickingUp;
-    private bool facingRight = false;
-    private bool isJumping;
-    public bool isThrowing;
-    [HideInInspector] public int maxSnowballs = 5;
-
-    private Vector2 Velocity;
-    private HashSet<GameObject> takenDamageFrom = new HashSet<GameObject>();
-
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
-    private Rigidbody2D rBody2D;
-    private HealthManager healthManager;
-
-    [Header("Collision Fields")]
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundMask;
-    private const float groundedRadius = 0.2f;
-    public UnityEvent OnLandEvent;
+    [Header("Other Player Events")]
     public UnityEvent OnGetShield;
 
+    [Header("Player Components")]
+    [SerializeField] private JumpMeter jumpMeter;
+    [SerializeField] private PlayerShooting playerShooting;
+    [SerializeField] private Inventory inventory;
+    [SerializeField] private HealthManager healthManager;
+    [SerializeField] private GameObject jumpMeterUI;
+    public GameObject shieldUI;
 
-    public int CurrentSnowballs
-    {
-        get
-        {
-            return currentSnowballs;
-        }
-        set
-        {
-            currentSnowballs = value;
-        }
-    }
+    public bool isPickingUp;
+    private bool isThrowing;
+    public bool interacting;
+    private bool knockback;
+    private float jumpAmount;
+    public bool isGettingDamaged;
 
-    private void Awake()
+    protected override void Awake()
     {
-        rBody2D = GetComponent<Rigidbody2D>();
+        base.Awake();
+
         jumpMeter = GetComponent<JumpMeter>();
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        playerShooting = GetComponent<PlayerShooting>();
         healthManager = FindObjectOfType<HealthManager>();
-        shooting = GetComponent<PlayerShooting>();
-
-        if (OnLandEvent == null)
-        {
-            OnLandEvent = new UnityEvent();
-        }
+        inventory = Inventory.instance;
 
         if (OnGetShield == null)
         {
@@ -84,18 +49,27 @@ public class Player : MonoBehaviour, IDamageable
         jumpMeterUI.SetActive(false);
     }
 
-    private void Update()
+    protected override void Update()
     {
-        xMove = Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
-        animator.SetFloat("Speed", Mathf.Abs(xMove));
+        if (GetComponent<Knockback>() && !knockback)
+        {
+            knockback = true;
+        }
+        else if (!GetComponent<Knockback>() && knockback)
+        {
+            knockback = false;
+        }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && knockBackCounter <= 0 && !isThrowing)
+        xMove = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime, 0f);
+        animator.SetFloat("Speed", Mathf.Abs(xMove.x));
+
+        if (Input.GetKeyDown(KeyCode.Space) && !knockback && !isJumping)
         {
             jumpMeterUI.SetActive(true);
             StartCoroutine(jumpMeter.CalculateJumpForce());
         }
 
-        if (Input.GetMouseButtonDown(0) && !shooting.CoolingDown && knockBackCounter <= 0 && isGrounded && !isThrowing && currentSnowballs > 0)
+        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback & !isJumping)
         {
             if (MouseOnLeft() && facingRight)
             {
@@ -115,72 +89,22 @@ public class Player : MonoBehaviour, IDamageable
                 ThrowSnowball();
             }
         }
-
-        if (knockBackCounter > 0)
-        {
-            knockBackCounter -= Time.deltaTime;
-        }
     }
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
-        if (knockBackCounter <= 0)
-        {
-            spriteRenderer.color = Color.white;
-            Move(xMove);
+        base.FixedUpdate();
 
-            if (isJumping)
-            {
-                rBody2D.AddForce(Vector2.up * jumpAmount * jumpHeightMultiplier, ForceMode2D.Impulse);
-                isJumping = false;
-            }
+        if (!knockback)
+        {
+            Move();
         }
 
-        CheckCollisions();
-    }
-
-    private void CheckCollisions()
-    {
-        bool wasGrounded = isGrounded;
-        isGrounded = false;
-        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(groundCheck.position, groundedRadius, groundMask); // Check for ground using ground collision.
-
-        for (int i = 0; i < groundColliders.Length; i++)
+        if (isJumping)
         {
-            if (groundColliders[i].gameObject != this.gameObject) // Check if we arent colliding with ourselves.
-            {
-                isGrounded = true;
-                if (!wasGrounded)
-                {
-                    OnLandEvent.Invoke();
-                }
-            }
+            rBody2D.AddForce(Vector2.up * jumpAmount * jumpHeightMultiplier, ForceMode2D.Impulse);
+            isJumping = false;
         }
-    }
-
-    public void Move(float move)
-    {
-        Vector2 targetVelocity = new Vector2(move * 10f, rBody2D.velocity.y);
-        rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, movementSmoothingAmount);
-
-        if (move > 0 && !facingRight)
-        {
-            Flip();
-        }
-        else if (move < 0 && facingRight)
-        {
-            Flip();
-        }
-    }
-
-    private void Flip()
-    {
-        facingRight = !facingRight;
-        spriteRenderer.flipX = facingRight;
-        //Vector2 xScale = transform.localScale;
-        //xScale.x *= -1;
-        //transform.localScale = xScale;
-
     }
 
     public void Jump(float amount)
@@ -189,76 +113,23 @@ public class Player : MonoBehaviour, IDamageable
         jumpAmount = amount;
         isJumping = true;
         animator.SetBool("IsJumping", true);
-    }
-
-    public void OnLanding()
-    {
-        isJumping = false;
-        animator.SetBool("IsJumping", false);
-        animator.SetBool("GotHurt", false);
-    }
-
-    public void OnShield()
-    {
-        shieldObject.SetActive(true);
-    }
-
-    public void Knockback(Vector2 direction, Color color)
-    {
-        knockBackCounter = knockBackTime;
-        rBody2D.velocity = -direction * knockBackForce;
-        rBody2D.velocity = new Vector2(rBody2D.velocity.x, knockBackForce);
-
-        isJumping = false;
-        animator.SetBool("IsJumping", false);
-        animator.SetBool("GotHurt", true);
-        BlipPlayer(color);
-    }
-
-    private void BlipPlayer(Color color)
-    {
-        spriteRenderer.color = color;
-    }
-
-    public void TakeDamage(int amount, Vector2 hitDirection)
-    {
-        if (inventory.HasShield)
-        {
-            inventory.HasShield = false;
-            Knockback(-hitDirection, blueColor);
-            shieldObject.GetComponent<Animator>().SetTrigger("ShieldBreak");
-            Debug.Log("Took no damage");
-            return;
-        }
-
-        if (!inventory.HasShield)
-        {
-            Knockback(-hitDirection, hurtColor);
-            healthManager.LoseHealth(amount);
-            Debug.Log("Took damage");
-            return;
-        }
-    }
-
-    public void TakeDamage(int amount)
-    {
-        if (inventory.HasShield)
-        {
-            inventory.HasShield = false;
-            shieldObject.GetComponent<Animator>().SetTrigger("ShieldBreak");
-            Debug.Log("Took no damage");
-        }
-        else
-        {
-            healthManager.LoseHealth(amount);
-            Debug.Log("Took damage");
-        }
+        AudioManager.instance.Play("player_jump_moan");
     }
 
     public void ThrowSnowball()
     {
-        shooting.Shoot();
-        isThrowing = true;
+        if(!isGrounded)
+        {
+            playerShooting.Shoot();
+            isThrowing = false;
+            animator.SetBool("Throwing", false);
+            AudioManager.instance.Play("player_throw");
+        } else
+        {
+            playerShooting.Shoot();
+            AudioManager.instance.Play("player_throw");
+            isThrowing = true;
+        }
     }
 
     public void OnFinishedThrowing()
@@ -267,60 +138,94 @@ public class Player : MonoBehaviour, IDamageable
         isThrowing = false;
     }
 
-    private bool MouseOnLeft()
+    public override void OnLanding()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (mousePos.x > transform.position.x)
+        base.OnLanding();
+        isJumping = false;
+        animator.SetBool("IsJumping", false);
+        animator.SetBool("GotHurt", false);
+        AudioManager.instance.Play("player_landing");
+    }
+
+    public void OnShield()
+    {
+        shieldUI.SetActive(true);
+    }
+
+    public override void TakeDamage(int amount, Transform objectHit)
+    {
+        if (!GetComponent<Knockback>())
         {
-            return false;
-        }
-        else if (mousePos.x < transform.position.x)
-        {
-            return true;
+            gameObject.AddComponent<Knockback>().InitKnockback(knockbackTime, knockbackForce, objectHit);
+            isJumping = false;
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("GotHurt", true);
         }
 
-        return false;
+        if (Inventory.instance.HasShield)
+        {
+            Debug.Log("Took no damage because shield.");
+            Inventory.instance.HasShield = false;
+            shieldUI.GetComponent<Animator>().SetTrigger("ShieldBreak");
+            return;
+        }
+
+        if (!Inventory.instance.HasShield)
+        {
+            Debug.Log("Took damage because no shield.");
+            healthManager.LoseHealth(amount);
+            AudioManager.instance.Play("player_take_damage");
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("GiantSnowballInteract"))
+        if (other.CompareTag("BreakSnowball") && !interacting)
         {
-            Jump(0.8f);
+            Jump(0.5f);
             other.GetComponentInParent<GiantSnowball>().KillBall();
+            interacting = true;
         }
 
-        if (other.CompareTag("GiantSnowball") && !isDamaged)
+        if (other.CompareTag("Enemy") && !isGettingDamaged)
         {
-            Vector2 hitDirection = transform.position - other.transform.position;
-            hitDirection = hitDirection.normalized;
-            other.GetComponentInParent<GiantSnowball>().Knockback(hitDirection); // Apply knockback effect to giant snowball.
-            TakeDamage(1, hitDirection);
-            isDamaged = true;
+            TakeDamage(1, other.transform);
+            if(other.GetComponent<BirdNew>())
+            {
+                other.GetComponent<BirdNew>().TakeDamage(1, transform);
+            }
+            isGettingDamaged = true;
         }
 
-        if (other.CompareTag("PlayerInteract"))
+        if (other.CompareTag("Item") && !isPickingUp)
         {
             Item item = other.GetComponent<Item>();
-            if (item != null && !isPickingUp)
+            if (item != null)
             {
+                isPickingUp = true;
                 item.Init();
                 Destroy(other.gameObject);
-                isPickingUp = true;
+                FindObjectOfType<AudioManager>().Play("player_pickup");
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("GiantSnowball") && isDamaged)
+        if (other.CompareTag("Enemy") && isGettingDamaged)
         {
-            isDamaged = false;
+            isGettingDamaged = false;
         }
 
-        if(other.CompareTag("PlayerInteract") && isPickingUp)
+        if (other.CompareTag("Item") && isPickingUp)
         {
             isPickingUp = false;
         }
+
+        if (other.CompareTag("BreakSnowball") && interacting)
+        {
+            interacting = false;
+        }
     }
+
 }

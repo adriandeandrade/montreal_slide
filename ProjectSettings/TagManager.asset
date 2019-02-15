@@ -4,10 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - GiantSnowball
   - GiantSnowballInteract
-  - PlayerInteract
   - Wall
+  - Bird
+  - Enemy
+  - Item
+  - Flock
+  - BirdReset
+  - FlockActivator
+  - KillZone
+  - BreakSnowball
   layers:
   - Default
   - TransparentFX
@@ -19,10 +25,10 @@ TagManager:
   - 
   - Ground
   - Player
-  - Post
-  - Throwable
-  - 
-  - 
+  - PostProcessing
+  - Item
+  - Snowball
+  - Damageable
   - 
   - 
   - 
