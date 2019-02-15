@@ -8,7 +8,7 @@ public class BaseEntity : MonoBehaviour, IDamageable
     [Header("Movement Fields")]
     [Range(1f, 150f)] [SerializeField] protected float moveSpeed;
     [SerializeField] protected float moveSpeedSmoothing = 0.5f;
-    [SerializeField] protected bool facingRight;
+    [SerializeField] public bool facingRight;
 
     [Header("Other Setup")]
     [SerializeField] protected Color damageBlipColor;

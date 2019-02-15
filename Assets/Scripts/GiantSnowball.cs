@@ -18,7 +18,16 @@ public class GiantSnowball : BaseEntity
     protected override void Update()
     {
         base.Update();
-        xMove = Vector2.left * moveSpeed * Time.deltaTime;
+
+        if(!facingRight)
+        {
+            xMove = Vector2.left * moveSpeed * Time.deltaTime;
+        } else
+        {
+            xMove = Vector2.right * moveSpeed * Time.deltaTime;
+        }
+
+        
     }
 
     public void KillBall()
