@@ -85,7 +85,7 @@ public class PlayerShooting : MonoBehaviour
             rotation.eulerAngles = new Vector3(0f, 0f, rotation.eulerAngles.z);
             FindObjectOfType<Inventory>().CurrentSnowballs--;
             GameObject snowballInstance = Instantiate(snowBallPrefab, transform.position, rotation);
-            snowballInstance.GetComponent<Rigidbody2D>().velocity = shotDirection.normalized * snowballSpeed; //new Vector2(shotDirection.x * snowballSpeed, shotDirection.y * snowballSpeed);
+            snowballInstance.GetComponent<Rigidbody2D>().velocity = shotDirection.normalized * snowballSpeed;
             Destroy(snowballInstance, 3f);
 
             coolingDown = true;

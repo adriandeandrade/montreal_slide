@@ -8,26 +8,23 @@ public class GiantSnowball : BaseEntity
     [SerializeField] private BoxCollider2D interactCollider;
     [SerializeField] private GameObject snowBallPrefab;
 
+    public bool doMove;
+
+    Animator animator;
+
     protected override void Awake()
     {
         base.Awake();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if(!facingRight)
-        {
-            xMove = Vector2.left * moveSpeed * Time.deltaTime;
-        } else
-        {
-            xMove = Vector2.right * moveSpeed * Time.deltaTime;
-        }
+        if (!doMove) return;
 
-        
+        xMove = Vector2.left * moveSpeed * Time.deltaTime;
     }
 
     public void KillBall()
