@@ -26,7 +26,7 @@ public class Snowball : MonoBehaviour
             if (bird != null)
             {
                 bird.GetComponent<Rigidbody2D>().simulated = false;
-                bird.TakeDamage(1, transform);
+                bird.TakeDamage(1, Vector2.zero);
 
                 GameObject hitEffect = Instantiate(snowballHitEffect, other.transform.position, Quaternion.identity);
                 Destroy(hitEffect, 3f);

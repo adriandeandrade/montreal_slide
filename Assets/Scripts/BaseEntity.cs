@@ -3,29 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BaseEntity : MonoBehaviour, IDamageable
+public class BaseEntity : MonoBehaviour
 {
     [Header("Movement Fields")]
-    [Range(1f, 150f)] [SerializeField] protected float moveSpeed;
+    [SerializeField] protected float moveSpeed;
     [SerializeField] protected float moveSpeedSmoothing = 0.5f;
-    [SerializeField] public bool facingRight;
 
-    [Header("Other Setup")]
-    [SerializeField] protected Color damageBlipColor;
+    [Header("Events")]
     [SerializeField] protected UnityEvent OnLandEvent;
 
     [Header("Collision Fields")]
     [SerializeField] protected Transform groundCheck;
     [SerializeField] protected LayerMask groundMask;
-
-    [Header("Component References")]
-    [SerializeField] protected Animator animator;
-    [SerializeField] protected Rigidbody2D rBody2D;
-    [SerializeField] protected SpriteRenderer spriteRenderer;
+    
+    protected Rigidbody2D rBody2D;
 
     protected Vector2 xMove;
-    protected bool isJumping;
-    protected bool isGrounded;
+    [HideInInspector]public bool isGrounded;
 
     private const float groundedRadius = 0.2f;
     protected Vector2 Velocity;
@@ -33,8 +27,6 @@ public class BaseEntity : MonoBehaviour, IDamageable
     protected virtual void Awake()
     {
         rBody2D = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (OnLandEvent == null)
         {
@@ -75,42 +67,8 @@ public class BaseEntity : MonoBehaviour, IDamageable
     {
         Vector2 targetVelocity = new Vector2(xMove.x * 10f, rBody2D.velocity.y);
         rBody2D.velocity = Vector2.SmoothDamp(rBody2D.velocity, targetVelocity, ref Velocity, moveSpeedSmoothing);
-
-        if (xMove.x > 0 && !facingRight)
-        {
-            Flip();
-        }
-        else if (xMove.x < 0 && facingRight)
-        {
-            Flip();
-        }
     }
-
-    protected void Flip()
-    {
-        facingRight = !facingRight;
-        spriteRenderer.flipX = facingRight;
-    }
-
-    protected bool MouseOnLeft()
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (mousePos.x > transform.position.x)
-        {
-            return false;
-        }
-        else if (mousePos.x < transform.position.x)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public virtual void TakeDamage(int amount, Transform objectHit)
-    {
-        
-    }
+    
     public virtual void OnLanding()
     {
 

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class JumpMeter : MonoBehaviour
 {
     [SerializeField] private Scrollbar scrollBar;
-    private Player player;
+    private PlayerMovement player;
 
     [Header("Jump Configuration")]
     [Tooltip("This value controls the how fast the jump meter increments.")]
@@ -15,7 +15,7 @@ public class JumpMeter : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponent<Player>();
+        player = GetComponent<PlayerMovement>();
     }
 
     private void Start()
@@ -29,7 +29,7 @@ public class JumpMeter : MonoBehaviour
         {
             if (scrollBarValue >= 1f) // Since the scrollbar value only goes from 0-1, we want to make sure we dont go over 1.
             {
-                player.Jump(scrollBarValue);
+                RestartJump();
                 ResetValues();
                 yield break;
             }
@@ -39,7 +39,7 @@ public class JumpMeter : MonoBehaviour
             yield return new WaitForSeconds(Time.deltaTime);
         }
 
-        player.Jump(scrollBarValue);
+        player.CalculateJump(scrollBarValue);
         ResetValues();
         yield break;
     }
@@ -48,5 +48,11 @@ public class JumpMeter : MonoBehaviour
     {
         scrollBarValue = 0f;
         scrollBar.value = 0f;
+    }
+
+    private void RestartJump()
+    {
+        ResetValues();
+        StartCoroutine((CalculateJumpForce()));
     }
 }

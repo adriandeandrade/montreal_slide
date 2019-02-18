@@ -74,7 +74,11 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+<<<<<<< HEAD
 --- !u!1 &339351751
+=======
+--- !u!1 &611025174
+>>>>>>> rework
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,8 +86,13 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+<<<<<<< HEAD
   - component: {fileID: 339351752}
   - component: {fileID: 339351753}
+=======
+  - component: {fileID: 611025175}
+  - component: {fileID: 611025176}
+>>>>>>> rework
   m_Layer: 9
   m_Name: Point Light
   m_TagString: Untagged
@@ -91,13 +100,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+<<<<<<< HEAD
 --- !u!4 &339351752
+=======
+--- !u!4 &611025175
+>>>>>>> rework
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 339351751}
+=======
+  m_GameObject: {fileID: 611025174}
+>>>>>>> rework
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -105,13 +122,21 @@ Transform:
   m_Father: {fileID: 1509243739206804385}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+<<<<<<< HEAD
 --- !u!108 &339351753
+=======
+--- !u!108 &611025176
+>>>>>>> rework
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 339351751}
+=======
+  m_GameObject: {fileID: 611025174}
+>>>>>>> rework
   m_Enabled: 0
   serializedVersion: 8
   m_Type: 2
@@ -670,11 +695,16 @@ GameObject:
   - component: {fileID: 1509243738583087218}
   - component: {fileID: 1509243738583087216}
   - component: {fileID: 1509243738583087229}
+  - component: {fileID: 5895836157232970643}
   - component: {fileID: 1509243738583087231}
   - component: {fileID: 1509243738583087230}
-  - component: {fileID: 8186937046162063685}
+  - component: {fileID: 8530884747787986112}
   - component: {fileID: 1084563462}
+<<<<<<< HEAD
   - component: {fileID: 2073078337}
+=======
+  - component: {fileID: 404380109}
+>>>>>>> rework
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -698,7 +728,11 @@ Transform:
   - {fileID: 934450994}
   - {fileID: 1509243740265422428}
   - {fileID: 1509243739230866759}
+<<<<<<< HEAD
   - {fileID: 339351752}
+=======
+  - {fileID: 611025175}
+>>>>>>> rework
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -802,10 +836,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b1f137232791a24ab67fadaca8e89a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   moveSpeed: 40
   moveSpeedSmoothing: 0.07
   facingRight: 1
   damageBlipColor: {r: 1, g: 0.3915094, b: 0.3915094, a: 1}
+=======
+  moveSpeed: 60
+  moveSpeedSmoothing: 0.07
+>>>>>>> rework
   OnLandEvent:
     m_PersistentCalls:
       m_Calls:
@@ -826,6 +865,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 256
+<<<<<<< HEAD
   animator: {fileID: 0}
   rBody2D: {fileID: 0}
   spriteRenderer: {fileID: 0}
@@ -833,29 +873,37 @@ MonoBehaviour:
   shieldBreakColor: {r: 0.22414559, g: 0.36634284, b: 0.6886792, a: 1}
   knockbackForce: 25
   knockbackTime: 0.9
+=======
+  isGrounded: 0
+  jumpHeightModifier: 3
+  minJumpHeight: 15
+  jumpMeter: {fileID: 1509243738583087231}
+  jumpMeterUI: {fileID: 1509243738546781166}
+  isJumping: 0
+  facingRight: 1
+--- !u!114 &5895836157232970643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509243738583087228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1297abfc1b5c68649921a6f2adf0016a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldUI: {fileID: 0}
+  shieldBreakColor: {r: 0.29803923, g: 0.63415366, b: 0.78431374, a: 1}
+  damageColor: {r: 0.7830189, g: 0.2991723, b: 0.2991723, a: 1}
+>>>>>>> rework
   OnGetShield:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1509243738583087229}
-        m_MethodName: OnShield
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  jumpMeter: {fileID: 1509243738583087231}
-  playerShooting: {fileID: 1509243738583087230}
-  inventory: {fileID: 0}
-  healthManager: {fileID: 0}
-  jumpMeterUI: {fileID: 1509243738546781166}
-  shieldUI: {fileID: 1509243740265422429}
   isPickingUp: 0
+  isThrowing: 0
   interacting: 0
   isGettingDamaged: 0
 --- !u!114 &1509243738583087231
@@ -892,7 +940,7 @@ MonoBehaviour:
   snowballAmountText: {fileID: 1948151077}
   snowballSpeed: 60
   cooldown: 0.3
---- !u!114 &8186937046162063685
+--- !u!114 &8530884747787986112
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -901,10 +949,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1509243738583087228}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4f4ba6eb3abdd04d9dca6f3d96baca4, type: 3}
+  m_Script: {fileID: 11500000, guid: eb6adaeefb97f704aabf684655e90d0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioManager: {fileID: 0}
+  knockbackForce: 15
+  knockbackTime: 0.5
+  isKnockback: 0
+  knockbackCounter: 0
 --- !u!61 &1084563462
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -931,7 +982,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.86392593, y: 1.2819552}
   m_EdgeRadius: 0
+<<<<<<< HEAD
 --- !u!81 &2073078337
+=======
+--- !u!81 &404380109
+>>>>>>> rework
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

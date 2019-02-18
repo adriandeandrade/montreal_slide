@@ -3,40 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Player : BaseEntity
+[RequireComponent(typeof(Knockback))]
+public class Player : MonoBehaviour, IDamageable
 {
-    [Header("Player Setup")]
-    [SerializeField] private float jumpHeightMultiplier;
+    public GameObject shieldUI;
     [SerializeField] private Color shieldBreakColor;
-    [SerializeField] private float knockbackForce;
-    [SerializeField] private float knockbackTime;
+    [SerializeField] private Color damageColor;
 
-    [Header("Other Player Events")]
+    PlayerShooting playerShooting;
+    PlayerMovement playerMovement;
+    Inventory inventory;
+    HealthManager healthManager;
+    Animator animator;
+    SpriteRenderer spriteRenderer;
+    Knockback knockback;
+
     public UnityEvent OnGetShield;
 
-    [Header("Player Components")]
-    [SerializeField] private JumpMeter jumpMeter;
-    [SerializeField] private PlayerShooting playerShooting;
-    [SerializeField] private Inventory inventory;
-    [SerializeField] private HealthManager healthManager;
-    [SerializeField] private GameObject jumpMeterUI;
-    public GameObject shieldUI;
+    [HideInInspector] public bool isPickingUp;
+    [HideInInspector] public bool isThrowing;
+    [HideInInspector] public bool interacting;
+    [HideInInspector] public bool isGettingDamaged;
+    //public bool knockback;
 
-    public bool isPickingUp;
-    private bool isThrowing;
-    public bool interacting;
-    private bool knockback;
-    private float jumpAmount;
-    public bool isGettingDamaged;
-
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-
-        jumpMeter = GetComponent<JumpMeter>();
         playerShooting = GetComponent<PlayerShooting>();
+        playerMovement = GetComponent<PlayerMovement>();
+        knockback = GetComponent<Knockback>();
+        inventory = FindObjectOfType<Inventory>();
         healthManager = FindObjectOfType<HealthManager>();
-        inventory = Inventory.instance;
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (OnGetShield == null)
         {
@@ -44,40 +42,18 @@ public class Player : BaseEntity
         }
     }
 
-    private void Start()
+    // Update is called once per frame
+    void Update()
     {
-        jumpMeterUI.SetActive(false);
-    }
-
-    protected override void Update()
-    {
-        if (GetComponent<Knockback>() && !knockback)
+        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback.isKnockback & !playerMovement.isJumping)
         {
-            knockback = true;
-        }
-        else if (!GetComponent<Knockback>() && knockback)
-        {
-            knockback = false;
-        }
-
-        xMove = new Vector2(Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime, 0f);
-        animator.SetFloat("Speed", Mathf.Abs(xMove.x));
-
-        if (Input.GetKeyDown(KeyCode.Space) && !knockback && !isJumping)
-        {
-            jumpMeterUI.SetActive(true);
-            StartCoroutine(jumpMeter.CalculateJumpForce());
-        }
-
-        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback & !isJumping)
-        {
-            if (MouseOnLeft() && facingRight)
+            if (MouseOnLeft() && playerMovement.facingRight)
             {
                 Flip();
                 animator.SetBool("Throwing", true);
                 ThrowSnowball();
             }
-            else if (!MouseOnLeft() && !facingRight)
+            else if (!MouseOnLeft() && !playerMovement.facingRight)
             {
                 Flip();
                 animator.SetBool("Throwing", true);
@@ -91,40 +67,16 @@ public class Player : BaseEntity
         }
     }
 
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-
-        if (!knockback)
-        {
-            Move();
-        }
-
-        if (isJumping)
-        {
-            rBody2D.AddForce(Vector2.up * jumpAmount * jumpHeightMultiplier, ForceMode2D.Impulse);
-            isJumping = false;
-        }
-    }
-
-    public void Jump(float amount)
-    {
-        jumpMeterUI.SetActive(false);
-        jumpAmount = amount;
-        isJumping = true;
-        animator.SetBool("IsJumping", true);
-        AudioManager.instance.Play("player_jump_moan");
-    }
-
     public void ThrowSnowball()
     {
-        if(!isGrounded)
+        if (!playerMovement.isGrounded)
         {
             playerShooting.Shoot();
             isThrowing = false;
             animator.SetBool("Throwing", false);
             AudioManager.instance.Play("player_throw");
-        } else
+        }
+        else
         {
             playerShooting.Shoot();
             AudioManager.instance.Play("player_throw");
@@ -138,29 +90,11 @@ public class Player : BaseEntity
         isThrowing = false;
     }
 
-    public override void OnLanding()
+    public void TakeDamage(int amount, Vector2 direction)
     {
-        base.OnLanding();
-        isJumping = false;
+        knockback.ApplyKnockback(direction, damageColor);
+        playerMovement.isJumping = false;
         animator.SetBool("IsJumping", false);
-        animator.SetBool("GotHurt", false);
-        AudioManager.instance.Play("player_landing");
-    }
-
-    public void OnShield()
-    {
-        shieldUI.SetActive(true);
-    }
-
-    public override void TakeDamage(int amount, Transform objectHit)
-    {
-        if (!GetComponent<Knockback>())
-        {
-            gameObject.AddComponent<Knockback>().InitKnockback(knockbackTime, knockbackForce, objectHit);
-            isJumping = false;
-            animator.SetBool("IsJumping", false);
-            animator.SetBool("GotHurt", true);
-        }
 
         if (Inventory.instance.HasShield)
         {
@@ -178,21 +112,27 @@ public class Player : BaseEntity
         }
     }
 
+    public void OnShield()
+    {
+        shieldUI.SetActive(true);
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("BreakSnowball") && !interacting)
         {
-            Jump(0.5f);
+            playerMovement.CalculateJump(0.5f);
             other.GetComponentInParent<GiantSnowball>().KillBall();
             interacting = true;
         }
 
         if (other.CompareTag("Enemy") && !isGettingDamaged)
         {
-            TakeDamage(1, other.transform);
-            if(other.GetComponent<BirdNew>())
+            Vector2 dir = transform.position - other.transform.position;
+            TakeDamage(1, dir);
+            if (other.GetComponent<BirdNew>())
             {
-                other.GetComponent<BirdNew>().TakeDamage(1, transform);
+                other.GetComponent<BirdNew>().TakeDamage(1, Vector2.zero);
             }
             isGettingDamaged = true;
         }
@@ -228,4 +168,25 @@ public class Player : BaseEntity
         }
     }
 
+
+    private bool MouseOnLeft()
+    {
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (mousePos.x > transform.position.x)
+        {
+            return false;
+        }
+        else if (mousePos.x < transform.position.x)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void Flip()
+    {
+        playerMovement.facingRight = !playerMovement.facingRight;
+        spriteRenderer.flipX = playerMovement.facingRight;
+    }
 }

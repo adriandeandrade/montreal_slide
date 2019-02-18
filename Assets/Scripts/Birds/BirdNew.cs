@@ -61,7 +61,7 @@ public class BirdNew : MonoBehaviour, IDamageable
         animator = GetComponent<Animator>();
         rBody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        target = FindObjectOfType<Player>().gameObject;
+        target = FindObjectOfType<PlayerMovement>().gameObject;
 
         movement = PickNewDirection();
     }
@@ -130,7 +130,7 @@ public class BirdNew : MonoBehaviour, IDamageable
         if(other.CompareTag("Player"))
         {
             rBody.simulated = false;
-            TakeDamage(1, transform);
+            TakeDamage(1, Vector2.zero);
         }
 
         if (other.CompareTag("Flock"))
@@ -143,7 +143,7 @@ public class BirdNew : MonoBehaviour, IDamageable
         }
     }
 
-    public void TakeDamage(int amount, Transform objectHit)
+    public void TakeDamage(int amount, Vector2 direction)
     {
         animator.SetTrigger("hasDied");
         // Object will get deleted with an animatione event.
