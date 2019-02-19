@@ -884,13 +884,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 688233377a12aa343b4054893dc41c72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  throwCooldown: 0
   cooldownBarUI: {fileID: 328799690083312581}
   snowBallPrefab: {fileID: 8007418614747927436, guid: c464e276ac1979c49be885e415056c93,
     type: 3}
   cooldownBarImage: {fileID: 1509243738499673585}
   snowballAmountText: {fileID: 1948151077}
   snowballSpeed: 60
-  cooldown: 0.3
 --- !u!114 &8530884747787986112
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ public class Knockback : MonoBehaviour
     Vector2 direction;
 
     bool knockbackTimerStart = false;
+    bool knockback;
 
     Rigidbody2D rBody;
     Player player;
@@ -46,17 +47,18 @@ public class Knockback : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isKnockback)
+        if (knockback)
         {
             rBody.velocity = direction.normalized * knockbackForce;
             rBody.velocity = new Vector2(rBody.velocity.x, knockbackForce);
-            isKnockback = false;
+            knockback = false;
         }
     }
 
     public void ApplyKnockback(Vector2 _direction, Color damageColor)
     {
         isKnockback = true;
+        knockback = true;
         knockbackCounter = knockbackTime;
         knockbackTimerStart = true;
         direction = _direction;

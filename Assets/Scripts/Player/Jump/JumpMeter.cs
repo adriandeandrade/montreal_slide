@@ -13,9 +13,12 @@ public class JumpMeter : MonoBehaviour
     [SerializeField] private float scrollBarValueIncrement; // The amount that the scrollbar value increments by.
     [HideInInspector] public float scrollBarValue; // The amount that the scrollbar is at when we release the spacebar.
 
+    public bool isCalculatingJump;
+
     private void Awake()
     {
         player = GetComponent<PlayerMovement>();
+        isCalculatingJump = false;
     }
 
     private void Start()
@@ -40,11 +43,12 @@ public class JumpMeter : MonoBehaviour
         }
 
         player.CalculateJump(scrollBarValue);
+        isCalculatingJump = false;
         ResetValues();
         yield break;
     }
 
-    private void ResetValues()
+    public void ResetValues()
     {
         scrollBarValue = 0f;
         scrollBar.value = 0f;

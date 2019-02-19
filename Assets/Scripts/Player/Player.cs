@@ -12,6 +12,7 @@ public class Player : MonoBehaviour, IDamageable
 
     PlayerShooting playerShooting;
     PlayerMovement playerMovement;
+    JumpMeter jumpMeter;
     Inventory inventory;
     HealthManager healthManager;
     Animator animator;
@@ -21,7 +22,7 @@ public class Player : MonoBehaviour, IDamageable
     public UnityEvent OnGetShield;
 
     [HideInInspector] public bool isPickingUp;
-    [HideInInspector] public bool isThrowing;
+    public bool isThrowing;
     [HideInInspector] public bool interacting;
     [HideInInspector] public bool isGettingDamaged;
     //public bool knockback;
@@ -32,6 +33,7 @@ public class Player : MonoBehaviour, IDamageable
         playerMovement = GetComponent<PlayerMovement>();
         knockback = GetComponent<Knockback>();
         inventory = FindObjectOfType<Inventory>();
+        jumpMeter = GetComponent<JumpMeter>();
         healthManager = FindObjectOfType<HealthManager>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -45,44 +47,58 @@ public class Player : MonoBehaviour, IDamageable
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback.isKnockback & !playerMovement.isJumping)
+        if (Input.GetMouseButtonDown(0) && !playerShooting.CoolingDown && !isThrowing && Inventory.instance.CurrentSnowballs > 0 && !knockback.isKnockback)
         {
-            if (MouseOnLeft() && playerMovement.facingRight)
-            {
-                Flip();
-                animator.SetBool("Throwing", true);
-                ThrowSnowball();
-            }
-            else if (!MouseOnLeft() && !playerMovement.facingRight)
-            {
-                Flip();
-                animator.SetBool("Throwing", true);
-                ThrowSnowball();
-            }
-            else
-            {
-                animator.SetBool("Throwing", true);
-                ThrowSnowball();
-            }
+            ThrowSnowball();
         }
     }
 
-    public void ThrowSnowball()
+    private void ThrowSnowball()
     {
-        if (!playerMovement.isGrounded)
+        if (Inventory.instance.CurrentSnowballs <= 0) return;
+
+        if (!playerShooting.CoolingDown && !isThrowing && !knockback.isKnockback)
         {
-            playerShooting.Shoot();
-            isThrowing = false;
-            animator.SetBool("Throwing", false);
-            AudioManager.instance.Play("player_throw");
+            PlayerThrowDirection();
+            Throw();
         }
         else
         {
-            playerShooting.Shoot();
-            AudioManager.instance.Play("player_throw");
-            isThrowing = true;
+            return;
         }
     }
+
+    private void Throw()
+    {
+        if (playerMovement.isJumping)
+        {
+            animator.SetBool("IsJumping", false);
+            animator.SetBool("Throwing", true);
+        }
+        else
+        {
+            animator.SetBool("Throwing", true);
+        }
+
+        isThrowing = true;
+        playerShooting.Shoot();
+        AudioManager.instance.Play("player_throw");
+    }
+
+    //public void ThrowSnowball()
+    //{
+
+    //    playerShooting.Shoot();
+    //    isThrowing = false;
+    //    animator.SetBool("Throwing", false);
+    //    AudioManager.instance.Play("player_throw");
+
+
+    //    playerShooting.Shoot();
+    //    AudioManager.instance.Play("player_throw");
+    //    isThrowing = true;
+
+    //}
 
     public void OnFinishedThrowing()
     {
@@ -119,7 +135,7 @@ public class Player : MonoBehaviour, IDamageable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("BreakSnowball") && !interacting)
+        if (other.CompareTag("BreakSnowball") && !interacting && !isGettingDamaged)
         {
             playerMovement.CalculateJump(0.5f);
             other.GetComponentInParent<GiantSnowball>().KillBall();
@@ -128,12 +144,19 @@ public class Player : MonoBehaviour, IDamageable
 
         if (other.CompareTag("Enemy") && !isGettingDamaged)
         {
+            if(jumpMeter.isCalculatingJump)
+            {
+                StopCoroutine(jumpMeter.CalculateJumpForce());
+                jumpMeter.ResetValues();
+            }
+
             Vector2 dir = transform.position - other.transform.position;
             TakeDamage(1, dir);
             if (other.GetComponent<BirdNew>())
             {
                 other.GetComponent<BirdNew>().TakeDamage(1, Vector2.zero);
             }
+
             isGettingDamaged = true;
         }
 
@@ -169,19 +192,17 @@ public class Player : MonoBehaviour, IDamageable
     }
 
 
-    private bool MouseOnLeft()
+    private void PlayerThrowDirection()
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        if (mousePos.x > transform.position.x)
+        if (mousePos.x > transform.position.x && !playerMovement.facingRight)
         {
-            return false;
+            Flip();
         }
-        else if (mousePos.x < transform.position.x)
+        else if (mousePos.x < transform.position.x && playerMovement.facingRight)
         {
-            return true;
+            Flip();
         }
-
-        return false;
     }
 
     public void Flip()
