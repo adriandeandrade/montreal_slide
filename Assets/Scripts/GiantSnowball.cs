@@ -24,25 +24,32 @@ public class GiantSnowball : BaseEntity
 
         if (!doMove) return;
 
-        xMove = Vector2.left * moveSpeed * Time.deltaTime;
+        if (isGrounded)
+        {
+            xMove = Vector2.left * moveSpeed * Time.deltaTime;
+        }
     }
 
     public void KillBall()
     {
         animator.SetTrigger("Break");
-        rBody2D.simulated = false;
+        //rBody2D.simulated = false;
         Invoke("Break", 0.2f);
     }
 
     public void Break()
     {
-        int amountToSpawn = Random.Range(1, 2);
+        int amountToSpawn = Random.Range(4, 5);
 
         for (int i = 0; i < amountToSpawn; i++)
         {
-            Vector2 spawnPos = new Vector2(Random.value, Random.value);
             GameObject snowballInstance = Instantiate(Resources.Load("Prefabs/Items/Snowball_Pickup", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
-            snowballInstance.GetComponent<Rigidbody2D>().AddForce(spawnPos * 2f, ForceMode2D.Impulse);
+            Rigidbody2D snowBallRBody = snowballInstance.GetComponent<Rigidbody2D>();
+
+            Vector2 direction = new Vector2(Random.Range(-20f, 20f), Random.Range(-10f, 10f));
+            float force = Random.Range(-20f, 20f);
+
+            snowBallRBody.AddForce(direction.normalized * 2f, ForceMode2D.Impulse);
         }
 
         Destroy(gameObject);

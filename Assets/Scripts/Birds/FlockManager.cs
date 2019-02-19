@@ -20,7 +20,7 @@ public class FlockManager : MonoBehaviour
     private CircleCollider2D idleFlyRadius;
     private AudioSource flockAudio;
 
-    [HideInInspector] public List<BirdNew> birds = new List<BirdNew>();
+    [HideInInspector] public List<Bird> birds = new List<Bird>();
 
     private void Awake()
     {
@@ -31,23 +31,23 @@ public class FlockManager : MonoBehaviour
 
     private void InitializeFlock()
     {
-        idleFlyRadius.radius = maxIdleFlyDistance;
+        UpdateFlyRadius();
 
         for (int i = 0; i < amountOfBirds; i++)
         {
             GameObject birdInstance = Instantiate(Resources.Load("Prefabs/Entites/Entity_Bird", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
             birdInstance.transform.SetParent(transform);
-            birdInstance.GetComponent<BirdNew>().flockManager = this;
-            birdInstance.GetComponent<BirdNew>().flockBounds = idleFlyRadius;
-            birdInstance.GetComponent<BirdNew>().AttackSpeed = attackSpeed;
-            birdInstance.GetComponent<BirdNew>().IdleSpeed = idleSpeed;
-            birds.Add(birdInstance.GetComponent<BirdNew>());
+            birdInstance.GetComponent<Bird>().flockManager = this;
+            birdInstance.GetComponent<Bird>().flockBounds = idleFlyRadius;
+            birdInstance.GetComponent<Bird>().AttackSpeed = attackSpeed;
+            birdInstance.GetComponent<Bird>().IdleSpeed = idleSpeed;
+            birds.Add(birdInstance.GetComponent<Bird>());
         }
     }
 
     public IEnumerator Attack()
     {
-        foreach (BirdNew bird in birds)
+        foreach (Bird bird in birds)
         {
             if(bird != null)
             {
@@ -61,5 +61,16 @@ public class FlockManager : MonoBehaviour
         attackHasStarted = false;
         birds.Clear();
         flockAudio.Stop();
+    }
+
+    private void UpdateFlyRadius()
+    {
+        idleFlyRadius.radius = maxIdleFlyDistance;
+    }
+
+    private void OnValidate()
+    {
+        idleFlyRadius = GetComponent<CircleCollider2D>();
+        UpdateFlyRadius();
     }
 }

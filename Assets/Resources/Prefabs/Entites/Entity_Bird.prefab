@@ -11,11 +11,10 @@ GameObject:
   - component: {fileID: 7251290568119187998}
   - component: {fileID: 5109786855863197126}
   - component: {fileID: 6914963099614015548}
-  - component: {fileID: 7251290568119187996}
   - component: {fileID: 8819021259197638185}
   - component: {fileID: 5644349522889041569}
   - component: {fileID: 6571399018044700106}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: Entity_Bird
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -31,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 7251290568119187993}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -22.06, y: -7.4, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -53,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a81aed6b3fc541744835385b2273fc3f, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -103,27 +102,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!50 &7251290568119187996
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7251290568119187993}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 1
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 1
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 7
 --- !u!114 &8819021259197638185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1fec5d7278ff248b73fc04f3dd8339, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackSpeed: 3
+  attackSpeed: 1.5
   idleSpeed: 8
   flockBounds: {fileID: 0}
   flockManager: {fileID: 0}
@@ -165,7 +143,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.025684088, y: 0.29322818}
+  m_Offset: {x: 0.05675602, y: 0.20001593}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -176,5 +154,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.397754, y: 0.75136894}
+  m_Size: {x: 0.56505775, y: 0.56494445}
   m_EdgeRadius: 0

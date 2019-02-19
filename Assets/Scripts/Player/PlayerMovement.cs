@@ -9,16 +9,15 @@ public class PlayerMovement : BaseEntity
     [SerializeField] private float jumpHeightModifier;
     [SerializeField] private float minJumpHeight;
 
-    [Header("Player Components")]
-    [SerializeField] private JumpMeter jumpMeter;
-    [SerializeField] private GameObject jumpMeterUI;
-
-    [HideInInspector] public bool isJumping;
+    public bool isJumping;
     [HideInInspector] public bool facingRight;
 
     float jumpAmount;
 
+    bool jump;
+
     Player player;
+    JumpMeter jumpMeter;
     Animator animator;
     Knockback knockback;
 
@@ -34,7 +33,7 @@ public class PlayerMovement : BaseEntity
 
     private void Start()
     {
-        jumpMeterUI.SetActive(false);
+        jumpMeter.jumpMeterUI.SetActive(false);
     }
 
     protected override void Update()
@@ -49,10 +48,9 @@ public class PlayerMovement : BaseEntity
         if (xMove.x < 0 && facingRight) player.Flip();
         else if (xMove.x > 0 && !facingRight) player.Flip();
 
-        if (Input.GetKeyDown(KeyCode.Space) && !knockback.isKnockback && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && !knockback.isKnockback && !isJumping && !jumpMeter.isCalculatingJump)
         {
-            jumpMeterUI.SetActive(true);
-            StartCoroutine(jumpMeter.CalculateJumpForce());
+            jumpMeter.StartCalulatingJump();
         }
     }
 
@@ -65,7 +63,7 @@ public class PlayerMovement : BaseEntity
             Move();
         }
 
-        if (isJumping)
+        if (jump)
         {
             if (jumpAmount <= 0.15f)
             {
@@ -75,16 +73,25 @@ public class PlayerMovement : BaseEntity
                 Vector2 jumpForce = new Vector2(rBody2D.velocity.x, Mathf.RoundToInt(minJumpHeight + (jumpAmount * 10) * jumpHeightModifier));
                 rBody2D.AddForce(jumpForce, ForceMode2D.Impulse);
             }
-            
-            isJumping = false;
+
+            jump = false;
         }
     }
 
     public void CalculateJump(float amount)
     {
-        jumpMeterUI.SetActive(false);
-        jumpAmount = amount * 0.5f;
         isJumping = true;
+        jump = true; // For fixedupdate
+        jumpMeter.jumpMeterUI.SetActive(false);
+        jumpMeter.isCalculatingJump = false;
+        jumpAmount = amount * 0.5f;
+
+        if (player.isThrowing)
+        {
+            animator.SetBool("Throwing", false);
+            player.isThrowing = false;
+        }
+
         animator.SetBool("IsJumping", true);
         AudioManager.instance.Play("player_jump_moan");
     }
@@ -94,7 +101,9 @@ public class PlayerMovement : BaseEntity
         base.OnLanding();
         isJumping = false;
         animator.SetBool("IsJumping", false);
-        animator.SetBool("GotHurt", false);
+        animator.SetBool("Throwing", false);
+        animator.SetBool("IsHurt", false);
+        player.isThrowing = false;
         AudioManager.instance.Play("player_landing");
     }
 }

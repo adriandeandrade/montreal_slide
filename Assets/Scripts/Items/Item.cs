@@ -23,7 +23,7 @@ public class Item : MonoBehaviour
 
     public void Init()
     {
-        switch(itemType)
+        switch (itemType)
         {
             case ItemType.SHIELD:
                 InitShield();
@@ -42,7 +42,7 @@ public class Item : MonoBehaviour
 
     private void InitShield()
     {
-        if(!inventory.HasShield)
+        if (!inventory.HasShield)
         {
             inventory.HasShield = true;
             player.OnGetShield.Invoke();
@@ -61,9 +61,6 @@ public class Item : MonoBehaviour
 
     private void InitSnowball()
     {
-        if(inventory.CurrentSnowballs < inventory.MaxSnowballs)
-        {
-            inventory.CurrentSnowballs += 1;
-        }
+        inventory.CurrentSnowballs += 1;
     }
 }

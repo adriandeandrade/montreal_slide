@@ -4,27 +4,21 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    [SerializeField] private int maxAmountOfSnowballs;
-    private int currentSnowballs;
-    private int currentCoins;
-    private bool hasShield = false;
-    private bool hasKey = false;
-
     public static Inventory instance;
+
+    int currentSnowballs = 99; // Just for debug
+    int currentCoins;
+
+    bool hasShield = false;
+    bool hasKey = false;
+
+    
 
     private void Start()
     {
         if(instance == null)
         {
             instance = this;
-        }
-    }
-
-    public int MaxSnowballs
-    {
-        get
-        {
-            return maxAmountOfSnowballs;
         }
     }
 

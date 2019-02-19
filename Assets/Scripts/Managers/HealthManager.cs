@@ -12,12 +12,19 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private int amountOfHearts;
     [SerializeField] private int currentHealth;
 
+    Player player;
+
     public int Health
     {
         get
         {
             return currentHealth;
         }
+    }
+
+    private void Awake()
+    {
+        player = FindObjectOfType<Player>();
     }
 
     private void Start()
@@ -41,7 +48,12 @@ public class HealthManager : MonoBehaviour
 
         if (currentHealth < 1)
         {
-            // Kill player.
+            player.Die();
+        }
+
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            player.Die();
         }
     }
 
