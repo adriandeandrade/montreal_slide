@@ -16,6 +16,7 @@ public class Knockback : MonoBehaviour
 
     Rigidbody2D rBody;
     Player player;
+    JumpMeter jumpMeter;
     Animator animator;
     SpriteRenderer spriteRenderer;
 
@@ -23,6 +24,7 @@ public class Knockback : MonoBehaviour
     {
         rBody = GetComponent<Rigidbody2D>();
         player = GetComponent<Player>();
+        jumpMeter = GetComponent<JumpMeter>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -31,7 +33,7 @@ public class Knockback : MonoBehaviour
     {
         if (knockbackCounter > 0 && knockbackTimerStart)
         {
-            rBody.gravityScale = 4f;
+            rBody.gravityScale = 2f;
             knockbackCounter -= Time.deltaTime;
             Debug.Log(rBody.velocity);
         }
@@ -41,7 +43,7 @@ public class Knockback : MonoBehaviour
             knockbackTimerStart = false;
             animator.SetBool("IsHurt", false);
             spriteRenderer.color = Color.white;
-            rBody.gravityScale = 7f;
+            rBody.gravityScale = 4f;
         }
     }
 
@@ -57,6 +59,12 @@ public class Knockback : MonoBehaviour
 
     public void ApplyKnockback(Vector2 _direction, Color damageColor)
     {
+        if(jumpMeter.isCalculatingJump)
+        {
+            jumpMeter.StopCalculatingJump();
+        }
+
+        rBody.velocity = Vector2.zero;
         isKnockback = true;
         knockback = true;
         knockbackCounter = knockbackTime;

@@ -74,75 +74,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!1 &611025174
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 611025175}
-  - component: {fileID: 611025176}
-  m_Layer: 9
-  m_Name: Point Light
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &611025175
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 611025174}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.94}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1509243739206804385}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!108 &611025176
-Light:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 611025174}
-  m_Enabled: 0
-  serializedVersion: 8
-  m_Type: 2
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2.16
-  m_Range: 5.12
-  m_SpotAngle: 30
-  m_CookieSize: 10
-  m_Shadows:
-    m_Type: 0
-    m_Resolution: -1
-    m_CustomResolution: -1
-    m_Strength: 1
-    m_Bias: 0.05
-    m_NormalBias: 0.4
-    m_NearPlane: 0.2
-  m_Cookie: {fileID: 0}
-  m_DrawHalo: 0
-  m_Flare: {fileID: 0}
-  m_RenderMode: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_Lightmapping: 4
-  m_LightShadowCasterMode: 0
-  m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
-  m_ShadowRadius: 0
-  m_ShadowAngle: 0
 --- !u!1 &934450993
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,7 +631,6 @@ Transform:
   - {fileID: 934450994}
   - {fileID: 1509243740265422428}
   - {fileID: 1509243739230866759}
-  - {fileID: 611025175}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -829,8 +759,6 @@ MonoBehaviour:
   isGrounded: 0
   jumpHeightModifier: 2
   minJumpHeight: 20
-  jumpMeter: {fileID: 1509243738583087231}
-  jumpMeterUI: {fileID: 1509243738546781166}
   isJumping: 0
   facingRight: 1
 --- !u!114 &5895836157232970643
@@ -870,8 +798,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollBar: {fileID: 1509243738244450521}
+  jumpMeterUI: {fileID: 1509243738546781166}
   scrollBarValueIncrement: 3
   scrollBarValue: 0
+  cancelledJump: 0
+  isCalculatingJump: 0
 --- !u!114 &1509243738583087230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884,13 +815,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 688233377a12aa343b4054893dc41c72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwCooldown: 0
+  throwCooldown: 0.5
   cooldownBarUI: {fileID: 328799690083312581}
-  snowBallPrefab: {fileID: 8007418614747927436, guid: c464e276ac1979c49be885e415056c93,
+  snowBallPrefab: {fileID: 1568493893575972483, guid: c464e276ac1979c49be885e415056c93,
     type: 3}
   cooldownBarImage: {fileID: 1509243738499673585}
   snowballAmountText: {fileID: 1948151077}
-  snowballSpeed: 60
+  snowballSpeed: 20
 --- !u!114 &8530884747787986112
 MonoBehaviour:
   m_ObjectHideFlags: 0

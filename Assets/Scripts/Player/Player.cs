@@ -146,8 +146,7 @@ public class Player : MonoBehaviour, IDamageable
         {
             if(jumpMeter.isCalculatingJump)
             {
-                StopCoroutine(jumpMeter.CalculateJumpForce());
-                jumpMeter.ResetValues();
+                jumpMeter.StopCalculatingJump();
             }
 
             Vector2 dir = transform.position - other.transform.position;
@@ -160,7 +159,7 @@ public class Player : MonoBehaviour, IDamageable
             isGettingDamaged = true;
         }
 
-        if (other.CompareTag("Item") && !isPickingUp)
+        if (other.CompareTag("Item"))
         {
             Item item = other.GetComponent<Item>();
             if (item != null)

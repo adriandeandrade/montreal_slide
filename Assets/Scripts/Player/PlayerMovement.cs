@@ -9,10 +9,6 @@ public class PlayerMovement : BaseEntity
     [SerializeField] private float jumpHeightModifier;
     [SerializeField] private float minJumpHeight;
 
-    [Header("Player Components")]
-    [SerializeField] private JumpMeter jumpMeter;
-    [SerializeField] private GameObject jumpMeterUI;
-
     public bool isJumping;
     [HideInInspector] public bool facingRight;
 
@@ -21,6 +17,7 @@ public class PlayerMovement : BaseEntity
     bool jump;
 
     Player player;
+    JumpMeter jumpMeter;
     Animator animator;
     Knockback knockback;
 
@@ -36,7 +33,7 @@ public class PlayerMovement : BaseEntity
 
     private void Start()
     {
-        jumpMeterUI.SetActive(false);
+        jumpMeter.jumpMeterUI.SetActive(false);
     }
 
     protected override void Update()
@@ -51,11 +48,9 @@ public class PlayerMovement : BaseEntity
         if (xMove.x < 0 && facingRight) player.Flip();
         else if (xMove.x > 0 && !facingRight) player.Flip();
 
-        if (Input.GetKeyDown(KeyCode.Space) && !knockback.isKnockback && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && !knockback.isKnockback && !isJumping && !jumpMeter.isCalculatingJump)
         {
-            jumpMeterUI.SetActive(true);
-            StartCoroutine(jumpMeter.CalculateJumpForce());
-            jumpMeter.isCalculatingJump = true;
+            jumpMeter.StartCalulatingJump();
         }
     }
 
@@ -85,10 +80,10 @@ public class PlayerMovement : BaseEntity
 
     public void CalculateJump(float amount)
     {
-        jumpMeterUI.SetActive(false);
         isJumping = true;
         jump = true; // For fixedupdate
-        
+        jumpMeter.jumpMeterUI.SetActive(false);
+        jumpMeter.isCalculatingJump = false;
         jumpAmount = amount * 0.5f;
 
         if (player.isThrowing)
