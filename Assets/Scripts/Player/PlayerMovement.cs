@@ -94,7 +94,7 @@ public class PlayerMovement : BaseEntity
         base.OnLanding();
         isJumping = false;
         animator.SetBool("IsJumping", false);
-        animator.SetBool("GotHurt", false);
+        animator.SetBool("IsHurt", false);
         AudioManager.instance.Play("player_landing");
     }
 }

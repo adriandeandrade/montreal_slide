@@ -22,15 +22,18 @@ public class GiantSnowball : BaseEntity
     {
         base.Update();
 
-        if (!doMove) return;
+        //if (!doMove) return;
 
-        xMove = Vector2.left * moveSpeed * Time.deltaTime;
+        if(isGrounded)
+        {
+            xMove = Vector2.left * moveSpeed * Time.deltaTime;
+        }
     }
 
     public void KillBall()
     {
         animator.SetTrigger("Break");
-        rBody2D.simulated = false;
+        //rBody2D.simulated = false;
         Invoke("Break", 0.2f);
     }
 
