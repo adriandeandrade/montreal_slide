@@ -22,10 +22,10 @@ public class Snowball : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            BirdNew bird = other.gameObject.GetComponent<BirdNew>();
+            Bird bird = other.gameObject.GetComponent<Bird>();
             if (bird != null)
             {
-                bird.GetComponent<Rigidbody2D>().simulated = false;
+                bird.GetComponent<Collider2D>().enabled = false;
                 bird.TakeDamage(1, Vector2.zero);
 
                 GameObject hitEffect = Instantiate(snowballHitEffect, other.transform.position, Quaternion.identity);

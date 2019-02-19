@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    public static Inventory instance;
+
     int currentSnowballs = 99; // Just for debug
     int currentCoins;
 
     bool hasShield = false;
     bool hasKey = false;
 
-    public static Inventory instance;
+    
 
     private void Start()
     {

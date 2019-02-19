@@ -35,7 +35,6 @@ public class Knockback : MonoBehaviour
         {
             rBody.gravityScale = 2f;
             knockbackCounter -= Time.deltaTime;
-            Debug.Log(rBody.velocity);
         }
         else if (knockbackCounter <= 0 && knockbackTimerStart)
         {

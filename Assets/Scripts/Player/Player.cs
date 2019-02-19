@@ -12,6 +12,7 @@ public class Player : MonoBehaviour, IDamageable
 
     PlayerShooting playerShooting;
     PlayerMovement playerMovement;
+    GameManager gameManager;
     JumpMeter jumpMeter;
     Inventory inventory;
     HealthManager healthManager;
@@ -19,18 +20,22 @@ public class Player : MonoBehaviour, IDamageable
     SpriteRenderer spriteRenderer;
     Knockback knockback;
 
+    Color blipColor;
+
     public UnityEvent OnGetShield;
+    public UnityEvent OnDie;
 
     [HideInInspector] public bool isPickingUp;
     public bool isThrowing;
     [HideInInspector] public bool interacting;
-    [HideInInspector] public bool isGettingDamaged;
+    public bool isGettingDamaged;
     //public bool knockback;
 
     private void Awake()
     {
         playerShooting = GetComponent<PlayerShooting>();
         playerMovement = GetComponent<PlayerMovement>();
+        gameManager = FindObjectOfType<GameManager>();
         knockback = GetComponent<Knockback>();
         inventory = FindObjectOfType<Inventory>();
         jumpMeter = GetComponent<JumpMeter>();
@@ -42,6 +47,16 @@ public class Player : MonoBehaviour, IDamageable
         {
             OnGetShield = new UnityEvent();
         }
+
+        if (OnDie == null)
+        {
+            OnDie = new UnityEvent();
+        }
+    }
+
+    private void Start()
+    {
+        animator.SetBool("IsDead", false);
     }
 
     // Update is called once per frame
@@ -85,21 +100,6 @@ public class Player : MonoBehaviour, IDamageable
         AudioManager.instance.Play("player_throw");
     }
 
-    //public void ThrowSnowball()
-    //{
-
-    //    playerShooting.Shoot();
-    //    isThrowing = false;
-    //    animator.SetBool("Throwing", false);
-    //    AudioManager.instance.Play("player_throw");
-
-
-    //    playerShooting.Shoot();
-    //    AudioManager.instance.Play("player_throw");
-    //    isThrowing = true;
-
-    //}
-
     public void OnFinishedThrowing()
     {
         animator.SetBool("Throwing", false);
@@ -108,9 +108,20 @@ public class Player : MonoBehaviour, IDamageable
 
     public void TakeDamage(int amount, Vector2 direction)
     {
-        knockback.ApplyKnockback(direction, damageColor);
+        if (Inventory.instance.HasShield)
+        {
+            blipColor = shieldBreakColor;
+        }
+        else
+        {
+            blipColor = damageColor;
+        }
+
+        knockback.ApplyKnockback(direction, blipColor);
         playerMovement.isJumping = false;
         animator.SetBool("IsJumping", false);
+
+        isGettingDamaged = false;
 
         if (Inventory.instance.HasShield)
         {
@@ -126,6 +137,18 @@ public class Player : MonoBehaviour, IDamageable
             healthManager.LoseHealth(amount);
             AudioManager.instance.Play("player_take_damage");
         }
+    }
+
+    public void Die()
+    {
+        animator.SetBool("IsDead", true);
+        Invoke("OnDieEvent", 1f);
+        Time.timeScale = 0.5f;
+    }
+
+    public void OnDieEvent()
+    {
+        OnDie.Invoke();
     }
 
     public void OnShield()
@@ -144,19 +167,22 @@ public class Player : MonoBehaviour, IDamageable
 
         if (other.CompareTag("Enemy") && !isGettingDamaged)
         {
-            if(jumpMeter.isCalculatingJump)
+            if (jumpMeter.isCalculatingJump)
             {
                 jumpMeter.StopCalculatingJump();
             }
 
             Vector2 dir = transform.position - other.transform.position;
-            TakeDamage(1, dir);
-            if (other.GetComponent<BirdNew>())
+
+            if (other.GetComponent<Bird>())
             {
-                other.GetComponent<BirdNew>().TakeDamage(1, Vector2.zero);
+                other.GetComponent<Collider2D>().enabled = false;
+                other.GetComponent<Bird>().TakeDamage(1, Vector2.zero);
+                Debug.Log("damaged");
             }
 
             isGettingDamaged = true;
+            TakeDamage(1, dir);
         }
 
         if (other.CompareTag("Item"))

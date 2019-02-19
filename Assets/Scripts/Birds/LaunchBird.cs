@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class LaunchBird : MonoBehaviour
 {
-    private BirdNew bird;
+    private Bird bird;
 
     private void Start()
     {
-        bird = GetComponentInParent<BirdNew>();
+        bird = GetComponentInParent<Bird>();
     }
 
     public void Disable()

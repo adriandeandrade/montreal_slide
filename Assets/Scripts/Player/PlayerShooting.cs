@@ -8,7 +8,7 @@ public class PlayerShooting : MonoBehaviour
 {
     [SerializeField] private float throwCooldown;
 
-    [SerializeField] private Canvas cooldownBarUI;
+    [SerializeField] private GameObject cooldownBarUI;
     [SerializeField] private GameObject snowBallPrefab;
     public Image cooldownBarImage;
     [SerializeField] private TextMeshProUGUI snowballAmountText;
@@ -63,7 +63,7 @@ public class PlayerShooting : MonoBehaviour
     private void UpdateCooldownBar()
     {
         cooldownRatio = currentCooldown / throwCooldown;
-        cooldownBarUI.enabled = true;
+        cooldownBarUI.SetActive(true);
         cooldownBarImage.fillAmount = cooldownRatio;
         currentCooldown -= Time.deltaTime;
     }
@@ -71,7 +71,7 @@ public class PlayerShooting : MonoBehaviour
     private void ResetCooldown()
     {
         coolingDown = false;
-        cooldownBarUI.enabled = false;
+        cooldownBarUI.SetActive(false);
         currentCooldown = throwCooldown;
         cooldownBarImage.fillAmount = 0;
     }

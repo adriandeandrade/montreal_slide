@@ -47,7 +47,7 @@ public class AudioManager : MonoBehaviour
             s.source.Play();
         } else
         {
-            Debug.Log("Could not find sound:" + name);
+            //Debug.Log("Could not find sound:" + name);
         }
     }
 }

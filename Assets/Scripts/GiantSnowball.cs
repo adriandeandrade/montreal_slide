@@ -47,7 +47,6 @@ public class GiantSnowball : BaseEntity
             Rigidbody2D snowBallRBody = snowballInstance.GetComponent<Rigidbody2D>();
 
             Vector2 direction = new Vector2(Random.Range(-20f, 20f), Random.Range(-10f, 10f));
-            Debug.Log(direction.normalized);
             float force = Random.Range(-20f, 20f);
 
             snowBallRBody.AddForce(direction.normalized * 2f, ForceMode2D.Impulse);
