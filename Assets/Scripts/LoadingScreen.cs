@@ -21,6 +21,7 @@ public class LoadingScreen : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         levelFader.FadeToLevel(2);
+        yield break;
         AudioManager.instance.Play("GameTheme");
 
     }

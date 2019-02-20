@@ -29,6 +29,11 @@ public class Player : MonoBehaviour, IDamageable
     public bool isThrowing;
     [HideInInspector] public bool interacting;
     public bool isGettingDamaged;
+
+    bool canTakeDamage;
+
+    float damageCooldown = 0.5f;
+    float currentDamageTime;
     //public bool knockback;
 
     private void Awake()
@@ -57,6 +62,7 @@ public class Player : MonoBehaviour, IDamageable
     private void Start()
     {
         animator.SetBool("IsDead", false);
+        Time.timeScale = 1f;
     }
 
     // Update is called once per frame
@@ -70,6 +76,15 @@ public class Player : MonoBehaviour, IDamageable
         if(transform.position.y < -20)
         {
             Die();
+        }
+
+        if(currentDamageTime > 0)
+        {
+            currentDamageTime -= Time.deltaTime;
+            canTakeDamage = false;
+        } else if(currentDamageTime <= 0)
+        {
+            canTakeDamage = true;
         }
     }
 
@@ -127,8 +142,6 @@ public class Player : MonoBehaviour, IDamageable
         playerMovement.isJumping = false;
         animator.SetBool("IsJumping", false);
 
-        isGettingDamaged = false;
-
         if (Inventory.instance.HasShield)
         {
             Debug.Log("Took no damage because shield.");
@@ -171,8 +184,11 @@ public class Player : MonoBehaviour, IDamageable
             interacting = true;
         }
 
-        if (other.CompareTag("Enemy") && !isGettingDamaged)
+        if (other.CompareTag("Enemy") && !isGettingDamaged && canTakeDamage)
         {
+            isGettingDamaged = true;
+            canTakeDamage = false;
+            currentDamageTime = damageCooldown;
             if (jumpMeter.isCalculatingJump)
             {
                 jumpMeter.StopCalculatingJump();
@@ -186,8 +202,7 @@ public class Player : MonoBehaviour, IDamageable
                 other.GetComponent<Bird>().TakeDamage(1, Vector2.zero);
                 Debug.Log("damaged");
             }
-
-            isGettingDamaged = true;
+            
             TakeDamage(1, dir);
         }
 

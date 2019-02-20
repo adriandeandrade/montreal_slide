@@ -100,9 +100,10 @@ GameObject:
   - component: {fileID: 8002690855786585362}
   - component: {fileID: 8002690855786585361}
   - component: {fileID: 8002690855786585364}
-  - component: {fileID: 8002690855786585365}
   - component: {fileID: 6132852550966901608}
   - component: {fileID: 2030876804}
+  - component: {fileID: 1138089065}
+  - component: {fileID: 1138089066}
   m_Layer: 13
   m_Name: GiantSnowball
   m_TagString: Enemy
@@ -241,32 +242,6 @@ MonoBehaviour:
   interactCollider: {fileID: 0}
   snowBallPrefab: {fileID: 0}
   doMove: 1
---- !u!61 &8002690855786585365
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8002690855786585375}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.2609036}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.92, y: 1.92}
-    newSize: {x: 1.92, y: 1.92}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.92, y: 1.3981204}
-  m_EdgeRadius: 0
 --- !u!82 &6132852550966901608
 AudioSource:
   m_ObjectHideFlags: 0
@@ -425,3 +400,75 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.92, y: 1.3981204}
   m_EdgeRadius: 0
+--- !u!60 &1138089065
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8002690855786585375}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.92, y: 1.92}
+    newSize: {x: 1.92, y: 1.92}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.95486355, y: 0.15596151}
+      - {x: -0.9547157, y: -0.22396326}
+      - {x: -0.7186794, y: -0.6787441}
+      - {x: -0.4470892, y: -0.8801985}
+      - {x: 0.005033493, y: -0.9778919}
+      - {x: 0.5185623, y: -0.8248329}
+      - {x: 0.7199116, y: -0.648036}
+      - {x: 0.96398544, y: -0.19406629}
+      - {x: 0.94, y: 0.32}
+      - {x: 0.91999996, y: 0.39}
+      - {x: -0.89360714, y: 0.37221217}
+--- !u!60 &1138089066
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8002690855786585375}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.92, y: 1.92}
+    newSize: {x: 1.92, y: 1.92}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.95486355, y: 0.15596151}
+      - {x: -0.9547157, y: -0.22396326}
+      - {x: -0.7186794, y: -0.6787441}
+      - {x: -0.4470892, y: -0.8801985}
+      - {x: 0.005033493, y: -0.9778919}
+      - {x: 0.5185623, y: -0.8248329}
+      - {x: 0.7199116, y: -0.648036}
+      - {x: 0.96398544, y: -0.19406629}
+      - {x: 0.94, y: 0.32}
+      - {x: 0.91999996, y: 0.39}
+      - {x: -0.89360714, y: 0.37221217}

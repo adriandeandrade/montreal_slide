@@ -12,6 +12,12 @@ EditorBuildSettings:
     path: Assets/Scenes/LoadingScreen.unity
     guid: 5fc1635eb79506145a9877195eefcccd
   - enabled: 1
+    path: Assets/Scenes/CarCutscene.unity
+    guid: 51d1937208e5a4f45bedb9e87b519f15
+  - enabled: 1
+    path: Assets/Scenes/BossCutscene.unity
+    guid: bafbd71d328a4424b81e2d7b8ba85b63
+  - enabled: 1
     path: Assets/Scenes/Proto_2.unity
     guid: 78f9b0cd044450847936573a380dcfa6
   m_configObjects: {}
