@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public enum ItemType { SHIELD, COIN, KEY, SNOWBALL };
+    public enum ItemType { SHIELD, COIN, BRIEFCASE, SNOWBALL };
     public ItemType itemType;
 
     private Inventory inventory;
@@ -31,8 +31,8 @@ public class Item : MonoBehaviour
             case ItemType.COIN:
                 InitCoin();
                 break;
-            case ItemType.KEY:
-                InitKey();
+            case ItemType.BRIEFCASE:
+                InitBriefCase();
                 break;
             case ItemType.SNOWBALL:
                 InitSnowball();
@@ -51,12 +51,14 @@ public class Item : MonoBehaviour
 
     private void InitCoin()
     {
-
+        inventory.CurrentCoins += 1;
+        Debug.Log("Added coin");
+        inventory.AddTime(5f);
     }
 
-    private void InitKey()
+    private void InitBriefCase()
     {
-
+        inventory.HasBriefcase = true;
     }
 
     private void InitSnowball()

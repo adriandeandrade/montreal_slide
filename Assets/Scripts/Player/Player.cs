@@ -66,10 +66,16 @@ public class Player : MonoBehaviour, IDamageable
         {
             ThrowSnowball();
         }
+
+        if(transform.position.y < -20)
+        {
+            Die();
+        }
     }
 
     private void ThrowSnowball()
     {
+
         if (Inventory.instance.CurrentSnowballs <= 0) return;
 
         if (!playerShooting.CoolingDown && !isThrowing && !knockback.isKnockback)
@@ -142,7 +148,7 @@ public class Player : MonoBehaviour, IDamageable
     public void Die()
     {
         animator.SetBool("IsDead", true);
-        Invoke("OnDieEvent", 1f);
+        Invoke("OnDieEvent", 0.5f);
         Time.timeScale = 0.5f;
     }
 

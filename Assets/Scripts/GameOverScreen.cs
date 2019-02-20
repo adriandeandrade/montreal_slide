@@ -14,8 +14,8 @@ public class GameOverScreen : MonoBehaviour
 
     public void Respawn()
     {
-        gameManager.Respawn();
         Time.timeScale = 1f;
+        gameManager.Respawn();
     }
 
     public void QuitToMainMenu()

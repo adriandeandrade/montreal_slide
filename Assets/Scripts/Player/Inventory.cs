@@ -6,10 +6,13 @@ public class Inventory : MonoBehaviour
 {
     public static Inventory instance;
 
-    int currentSnowballs = 99; // Just for debug
+    Timer timer;
+
+    int currentSnowballs = 10; // Just for debug
     int currentCoins;
 
     bool hasShield = false;
+    bool hasBriefcase = true;
     bool hasKey = false;
 
     
@@ -20,6 +23,8 @@ public class Inventory : MonoBehaviour
         {
             instance = this;
         }
+
+        timer = FindObjectOfType<Timer>();
     }
 
     public bool HasShield
@@ -30,6 +35,18 @@ public class Inventory : MonoBehaviour
         } set
         {
             hasShield = value;
+        }
+    }
+
+    public bool HasBriefcase
+    {
+        get
+        {
+            return hasBriefcase;
+        }
+        set
+        {
+            hasBriefcase = value;
         }
     }
 
@@ -67,5 +84,10 @@ public class Inventory : MonoBehaviour
         {
             currentSnowballs = value;
         }
+    }
+
+    public void AddTime(float time)
+    {
+        timer.AddTime(time);
     }
 }

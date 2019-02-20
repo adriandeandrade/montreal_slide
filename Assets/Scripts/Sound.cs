@@ -6,8 +6,6 @@ using UnityEngine.Audio;
 [System.Serializable]
 public class Sound
 {
-    public bool playSound;
-
     public string name;
 
     public AudioClip clip;

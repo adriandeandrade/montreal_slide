@@ -13,6 +13,12 @@ public class MainMenuController : MonoBehaviour
         levelFader = FindObjectOfType<LevelFader>();
     }
 
+    private void Start()
+    {
+        AudioManager.instance.Stop("GameTheme");
+        AudioManager.instance.Play("MenuTheme");
+    }
+
     private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
@@ -23,13 +29,13 @@ public class MainMenuController : MonoBehaviour
 
     public void Play()
     {
-        //levelFader.FadeToLevel(1);
-        notFullGame.SetActive(true);
+        levelFader.FadeToLevel(1);
     }
 
     public void Demo()
     {
-        levelFader.FadeToLevel(1);
+        //levelFader.FadeToLevel(1);
+        Debug.Log("Not Available");
     }
 
     public void Help()

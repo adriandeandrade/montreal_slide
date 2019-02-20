@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject gameOverButtons;
+    [SerializeField] private GameObject youWinUI;
 
     bool gameOver;
 
@@ -20,6 +21,12 @@ public class GameManager : MonoBehaviour
     {
         player = FindObjectOfType<Player>();
         levelFader = FindObjectOfType<LevelFader>();
+    }
+
+    private void Start()
+    {
+        AudioManager.instance.Stop("MenuTheme");
+        AudioManager.instance.Play("GameTheme");
     }
 
     public void GameOver()
@@ -49,5 +56,10 @@ public class GameManager : MonoBehaviour
     public void Respawn()
     {
         levelFader.FadeToLevel(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void Win()
+    {
+        youWinUI.SetActive(true);
     }
 }

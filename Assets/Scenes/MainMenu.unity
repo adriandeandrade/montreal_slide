@@ -5518,6 +5518,104 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &936438832
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 936438834}
+  - component: {fileID: 936438833}
+  m_Layer: 0
+  m_Name: _AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &936438833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936438832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2a643994258804eb63d9770e163988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: player_pickup
+    clip: {fileID: 8300000, guid: 356feba4a1ec1ed4d8a26301901590ce, type: 3}
+    source: {fileID: 0}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+  - name: player_landing
+    clip: {fileID: 8300000, guid: 5074123d84e4ff047b9257c58681ed8b, type: 3}
+    source: {fileID: 0}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+  - name: MenuTheme
+    clip: {fileID: 8300000, guid: b4240f0de0690ef4bb268ce5be5d859f, type: 3}
+    source: {fileID: 0}
+    volume: 0.2
+    pitch: 1
+    loop: 1
+  - name: CitySound
+    clip: {fileID: 8300000, guid: a8db244f7459a9f4d9e2a308b700b0fe, type: 3}
+    source: {fileID: 0}
+    volume: 1
+    pitch: 1
+    loop: 0
+  - name: player_jump_moan
+    clip: {fileID: 8300000, guid: 6a86a3aadd827f047b2515ca98a4f64f, type: 3}
+    source: {fileID: 0}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+  - name: player_throw
+    clip: {fileID: 8300000, guid: 656a960d31deeb74999c9f8b35d6d8b4, type: 3}
+    source: {fileID: 0}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+  - name: player_take_damage
+    clip: {fileID: 8300000, guid: 55aea4a3905704d40a4fc72e82b02a57, type: 3}
+    source: {fileID: 0}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+  - name: bird_attack
+    clip: {fileID: 8300000, guid: b211285d9097fdd47a2e7266d0cc2517, type: 3}
+    source: {fileID: 0}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+  - name: GameTheme
+    clip: {fileID: 8300000, guid: 5e132fb56a1bbe843bc4b8f12879b5c4, type: 3}
+    source: {fileID: 0}
+    volume: 0.05
+    pitch: 1
+    loop: 0
+--- !u!4 &936438834
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936438832}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -42.41092, y: -8.961915, z: -0.054804754}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &941730498
 GameObject:
   m_ObjectHideFlags: 0
@@ -5800,7 +5898,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000045776, y: -515}
+  m_AnchoredPosition: {x: -0.000045776, y: -436}
   m_SizeDelta: {x: 418.2, y: 683.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1123518554
@@ -5823,7 +5921,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 340682931feab2e46a44a356f751c2ff, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3aab0c347e700f74a932b9c2abf0b10e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
